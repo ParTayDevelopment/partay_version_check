@@ -1,0 +1,13 @@
+# Database Dumps
+*.sql
+*.bak
+
+# Environment Configs
+.env
+config.json
+keys.txt
+
+# Compiled/Cache Data
+node_modules/
+bin/
+obj/
