@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Empty smart fob shell">
+  <defs>
+    <linearGradient id="case" x1="48" y1="28" x2="210" y2="230" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1f2937"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="72" y1="64" x2="184" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#67e8f9"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="34" fill="#0f172a"/>
+  <path d="M92 32h72c24 0 44 20 44 44v104c0 24-20 44-44 44H92c-24 0-44-20-44-44V76c0-24 20-44 44-44Z" fill="url(#case)" stroke="#334155" stroke-width="8"/>
+  <circle cx="128" cy="70" r="17" fill="#020617" stroke="#64748b" stroke-width="8"/>
+  <rect x="78" y="108" width="100" height="72" rx="18" fill="#020617" stroke="url(#accent)" stroke-width="7" stroke-dasharray="14 10"/>
+  <path d="M99 145h58" stroke="#94a3b8" stroke-width="8" stroke-linecap="round"/>
+  <path d="M128 115v58" stroke="#155e75" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+  <path d="M84 210h88" stroke="#38bdf8" stroke-width="10" stroke-linecap="round"/>
+</svg>

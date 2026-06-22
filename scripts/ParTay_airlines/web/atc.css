@@ -1,0 +1,179 @@
+/* ============================================================
+   atc.css — aircraft radio panel (pilot-facing ATC NUI)
+   Independent overlay. Everything is scoped under #atc-root so it
+   can live in the same page as the Airport Creator without clashing.
+   ============================================================ */
+#atc-root{
+  --a-cyan:#27dcec; --a-cyan-dim:#1a8a96; --a-amber:#ffb43d; --a-green:#4be07c;
+  --a-red:#ff5151; --a-text:#cfe6ec; --a-muted:#5b727e;
+  --a-line:rgba(39,220,236,.16); --a-line-strong:rgba(39,220,236,.34);
+  --a-glow:0 0 12px rgba(39,220,236,.5);
+  position:fixed; inset:0; z-index:9000; display:none;
+  font-family:'JetBrains Mono',ui-monospace,'Consolas',monospace;
+  color:var(--a-text);
+}
+#atc-root.atc-open{display:block}
+
+/* device pinned to the LEFT edge */
+#atc-root .atc-device{
+  position:absolute; left:1.4vh; top:50%; transform:translateY(-50%);
+  height:69.36vh; aspect-ratio:600/1200; max-width:33.24vw;
+}
+#atc-root .atc-bezel{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;
+  pointer-events:none;user-select:none;-webkit-user-drag:none}
+
+/* clickable hardware hotspots */
+#atc-root .atc-hot{position:absolute;cursor:pointer;border-radius:8px;z-index:5}
+#atc-root .atc-hot:active{box-shadow:inset 0 0 18px rgba(39,220,236,.4)}
+#atc-root #atc-hotXmit{left:20%;top:70.2%;width:14%;height:5.2%}
+#atc-root #atc-hotAtc {left:78%;top:73.4%;width:15%;height:6.4%}
+#atc-root .atc-hot.atc-flash{animation:atc-hotflash .25s ease}
+@keyframes atc-hotflash{0%{box-shadow:inset 0 0 22px rgba(39,220,236,.6)}100%{box-shadow:none}}
+
+/* RECEIVING lamp (blinks on incoming) */
+#atc-root #atc-lamp{position:absolute;left:23.4%;top:7.9%;width:3.2%;aspect-ratio:1;border-radius:50%;
+  transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(75,224,124,.95),transparent 70%);
+  opacity:0;pointer-events:none;z-index:4}
+#atc-root #atc-lamp.atc-rx{animation:atc-rxblink 1.4s ease}
+@keyframes atc-rxblink{0%,100%{opacity:0}15%,55%{opacity:1}}
+
+/* STATUS lamp (green connected / red emergency) */
+#atc-root #atc-statlamp{position:absolute;left:64%;top:75.8%;width:2.4%;aspect-ratio:1;border-radius:50%;
+  transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(75,224,124,.9),transparent 72%);
+  opacity:.8;pointer-events:none;z-index:4}
+#atc-root #atc-statlamp.atc-em{background:radial-gradient(circle,rgba(255,81,81,.95),transparent 72%);
+  animation:atc-empulse 1s infinite}
+@keyframes atc-empulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* the glass screen inside the cutout */
+#atc-root .atc-screen{
+  position:absolute;left:5.6%;top:11.2%;width:88.8%;height:55.6%;
+  container-type:size;overflow:hidden;border-radius:2.4%/1.2%;
+  background:radial-gradient(120% 80% at 50% 0%, rgba(39,220,236,.05), transparent 60%),
+    linear-gradient(180deg,#06141a 0%,#040c11 100%);
+  box-shadow:inset 0 0 40px rgba(0,0,0,.85), inset 0 0 0 1px rgba(39,220,236,.07);
+  display:flex;flex-direction:column;z-index:3;
+}
+#atc-root .atc-screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:9;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);
+  mix-blend-mode:multiply;opacity:.5}
+#atc-root .atc-screen::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:9;
+  box-shadow:inset 0 0 60px rgba(0,0,0,.6)}
+
+#atc-root .atc-view{display:none;flex-direction:column;height:100%;animation:atc-vfade .25s ease}
+#atc-root .atc-view.atc-on{display:flex}
+@keyframes atc-vfade{from{opacity:0}to{opacity:1}}
+
+/* top bar */
+#atc-root .atc-sbar{display:flex;align-items:center;justify-content:space-between;
+  padding:2.6cqh 3.4cqw;border-bottom:1px solid var(--a-line);
+  background:linear-gradient(180deg,rgba(39,220,236,.06),transparent)}
+#atc-root .atc-vw{font-family:'Saira Condensed','Oswald',sans-serif;font-size:3.2cqh;font-weight:700;
+  letter-spacing:.3cqw;color:#fff;text-shadow:var(--a-glow)}
+#atc-root .atc-vw small{display:block;font-size:1.7cqh;letter-spacing:.5cqw;color:var(--a-muted);font-weight:500}
+#atc-root .atc-freq{font-size:4cqh;font-weight:700;color:var(--a-cyan);text-shadow:var(--a-glow);letter-spacing:.2cqw;text-align:right}
+#atc-root .atc-freq small{display:block;font-size:1.6cqh;color:var(--a-muted);letter-spacing:.4cqw;
+  font-family:'Saira Condensed',sans-serif}
+
+/* clearance strip */
+#atc-root .atc-clr{padding:1.8cqh 3.4cqw;border-bottom:1px solid var(--a-line);background:rgba(255,180,61,.06)}
+#atc-root .atc-clr .k{font-family:'Saira Condensed',sans-serif;font-size:1.7cqh;letter-spacing:.5cqw;
+  text-transform:uppercase;color:var(--a-amber);opacity:.8;margin-bottom:.4cqh}
+#atc-root .atc-clr .v{font-size:2.4cqh;color:var(--a-amber);font-weight:500;text-shadow:0 0 8px rgba(255,180,61,.35)}
+#atc-root .atc-clr.atc-emc .v{color:var(--a-red);text-shadow:0 0 8px rgba(255,81,81,.4)}
+#atc-root .atc-readback{margin-top:.7cqh;font-family:'Saira Condensed',sans-serif;font-size:1.55cqh;
+  letter-spacing:.35cqw;text-transform:uppercase;color:var(--a-muted)}
+#atc-root .atc-readback.need{color:var(--a-amber)}
+#atc-root .atc-readback.done{color:var(--a-cyan)}
+
+/* transmissions log */
+#atc-root .atc-logwrap{flex:1;display:flex;flex-direction:column;min-height:0}
+#atc-root .atc-loghd{padding:1.4cqh 3.4cqw .6cqh;font-family:'Saira Condensed',sans-serif;font-size:1.6cqh;
+  letter-spacing:.55cqw;text-transform:uppercase;color:var(--a-muted)}
+#atc-root .atc-log{flex:1;overflow-y:auto;padding:0 3.4cqw 1cqh}
+#atc-root .atc-log::-webkit-scrollbar{width:.9cqw}
+#atc-root .atc-log::-webkit-scrollbar-thumb{background:var(--a-line-strong);border-radius:3px}
+#atc-root .atc-msg{margin-bottom:1.5cqh;font-size:2cqh;line-height:1.4;animation:atc-slide .25s ease}
+#atc-root .atc-msg .meta{font-size:1.4cqh;letter-spacing:.2cqw;color:var(--a-muted);margin-bottom:.3cqh}
+#atc-root .atc-msg .who{font-weight:700}
+#atc-root .atc-msg.atc .who{color:var(--a-cyan)}
+#atc-root .atc-msg.pilot .who{color:var(--a-amber)}
+#atc-root .atc-msg.sys{color:var(--a-muted);font-style:italic;font-size:1.8cqh}
+@keyframes atc-slide{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+#atc-root .atc-logempty{padding:2cqh 3.4cqw;color:var(--a-muted);font-size:1.9cqh;font-style:italic}
+
+/* request buttons */
+#atc-root .atc-reqs{padding:1.6cqh 2.6cqw;border-top:1px solid var(--a-line);background:rgba(0,0,0,.24)}
+#atc-root .atc-rgrid{display:grid;grid-template-columns:1fr 1fr;gap:1.3cqh 2.2cqw}
+#atc-root .atc-rgrid .full{grid-column:1/-1}
+#atc-root .atc-rbtn{padding:1.5cqh .6cqw;background:rgba(17,27,37,.9);border:1px solid var(--a-line-strong);
+  border-radius:1.4cqh;color:var(--a-text);cursor:pointer;font-family:'Saira Condensed',sans-serif;
+  font-size:2cqh;font-weight:600;letter-spacing:.25cqw;text-transform:uppercase;transition:.14s}
+#atc-root .atc-rbtn:hover{background:rgba(39,220,236,.14);border-color:var(--a-cyan);color:#fff;box-shadow:var(--a-glow)}
+#atc-root .atc-rbtn:active{transform:translateY(1px)}
+#atc-root .atc-rbtn.em{background:rgba(255,81,81,.1);border-color:rgba(255,81,81,.5);color:var(--a-red)}
+#atc-root .atc-rbtn.em:hover{background:rgba(255,81,81,.22);color:#fff;box-shadow:0 0 14px rgba(255,81,81,.5)}
+#atc-root .atc-more{margin-top:1.3cqh}
+#atc-root .atc-moretoggle{width:100%;background:none;border:1px dashed var(--a-line-strong);color:var(--a-muted);
+  border-radius:1cqh;padding:1cqh;cursor:pointer;font-family:'Saira Condensed',sans-serif;font-size:1.8cqh;
+  letter-spacing:.4cqw;text-transform:uppercase}
+#atc-root .atc-moretoggle:hover{color:var(--a-cyan);border-color:var(--a-cyan)}
+#atc-root .atc-extra{display:none;grid-template-columns:1fr 1fr 1fr;gap:1.2cqh 1.6cqw;margin-top:1.3cqh}
+#atc-root .atc-extra.atc-shown{display:grid}
+#atc-root .atc-extra .atc-rbtn{font-size:1.7cqh;padding:1.2cqh .4cqw}
+
+/* TX indicator */
+#atc-root #atc-tx{position:absolute;top:2cqh;left:50%;transform:translateX(-50%);z-index:10;
+  font-family:'Saira Condensed',sans-serif;font-size:2cqh;letter-spacing:.5cqw;color:var(--a-amber);
+  background:rgba(255,180,61,.12);border:1px solid rgba(255,180,61,.5);border-radius:1cqh;
+  padding:.5cqh 2cqw;opacity:0;pointer-events:none;transition:opacity .15s}
+#atc-root #atc-tx.atc-on{opacity:1}
+
+/* FLIGHT view */
+#atc-root .atc-fcs{padding:2.4cqh 0 1.6cqh;text-align:center;border-bottom:1px solid var(--a-line);
+  background:rgba(39,220,236,.05)}
+#atc-root .atc-fcs b{font-family:'Saira Condensed',sans-serif;font-size:5.6cqh;letter-spacing:1cqw;color:#fff;
+  text-shadow:var(--a-glow);display:block;line-height:1}
+#atc-root .atc-fcs span{font-size:1.8cqh;letter-spacing:.6cqw;color:var(--a-muted);text-transform:uppercase}
+#atc-root .atc-froute{display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.2cqh 0;
+  border-bottom:1px solid var(--a-line)}
+#atc-root .atc-froute .ap{text-align:center}
+#atc-root .atc-froute .ap b{font-family:'Saira Condensed',sans-serif;font-size:3.4cqh;color:var(--a-cyan);
+  letter-spacing:.4cqw;display:block}
+#atc-root .atc-froute .ap span{font-size:1.5cqh;letter-spacing:.4cqw;color:var(--a-muted);text-transform:uppercase}
+#atc-root .atc-froute .ln{width:14cqw;height:1px;background:linear-gradient(90deg,var(--a-cyan-dim),var(--a-cyan),var(--a-cyan-dim));
+  position:relative}
+#atc-root .atc-froute .ln::after{content:"\2708";position:absolute;top:-1.6cqh;left:50%;transform:translateX(-50%);
+  color:var(--a-cyan);font-size:2.4cqh}
+#atc-root .atc-fgrid{display:grid;grid-template-columns:1fr 1fr}
+#atc-root .atc-fcell{padding:1.5cqh 3.4cqw;border-bottom:1px solid var(--a-line)}
+#atc-root .atc-fcell:nth-child(odd){border-right:1px solid var(--a-line)}
+#atc-root .atc-fcell .k{font-family:'Saira Condensed',sans-serif;font-size:1.6cqh;letter-spacing:.45cqw;
+  text-transform:uppercase;color:var(--a-muted);margin-bottom:.4cqh}
+#atc-root .atc-fcell .v{font-size:2.3cqh;color:var(--a-text)}
+#atc-root .atc-fcell .v.cyan{color:var(--a-cyan)}
+#atc-root .atc-fbar{padding:1.5cqh 3.4cqw;border-bottom:1px solid var(--a-line)}
+#atc-root .atc-fbar .k{font-family:'Saira Condensed',sans-serif;font-size:1.6cqh;letter-spacing:.45cqw;
+  text-transform:uppercase;color:var(--a-muted)}
+#atc-root .atc-fbar .v{font-size:2.8cqh;color:#fff;margin:.3cqh 0}
+#atc-root .atc-fbar .v small{font-size:1.8cqh;color:var(--a-muted)}
+#atc-root .atc-bar{height:1.3cqh;background:#101b25;border:1px solid var(--a-line);border-radius:1cqh;overflow:hidden}
+#atc-root .atc-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a-cyan-dim),var(--a-cyan));box-shadow:var(--a-glow)}
+#atc-root .atc-fstat{padding:2cqh 3.4cqw}
+#atc-root .atc-pill{display:inline-block;padding:1cqh 3cqw;border-radius:1cqh;font-family:'Saira Condensed',sans-serif;
+  font-size:2.1cqh;letter-spacing:.4cqw;text-transform:uppercase;font-weight:600;
+  background:rgba(255,180,61,.12);color:var(--a-amber);border:1px solid rgba(255,180,61,.4)}
+
+/* ===== reposition / resize (edit) mode ===== */
+#atc-root.atc-editing{pointer-events:auto}
+#atc-root.atc-editing .atc-device{cursor:move;outline:2px dashed rgba(39,220,236,.85);outline-offset:6px}
+#atc-root.atc-editing .atc-screen{pointer-events:none}
+#atc-root .atc-editbar{display:none;position:absolute;left:50%;top:-7%;transform:translateX(-50%);
+  align-items:center;gap:.7vw;white-space:nowrap;z-index:40;pointer-events:auto;
+  background:rgba(6,14,20,.94);border:1px solid rgba(39,220,236,.55);border-radius:10px;
+  padding:.5vh 1vw;font-family:'Saira Condensed','Oswald',sans-serif}
+#atc-root.atc-editing .atc-editbar{display:flex}
+#atc-root .atc-editlabel{color:#27dcec;letter-spacing:2px;text-transform:uppercase;font-size:1.4vh}
+#atc-root .atc-szbtn{min-width:3vh;height:3vh;padding:0 .6vw;display:grid;place-items:center;background:#16222d;
+  border:1px solid rgba(39,220,236,.5);color:#cfe6ec;border-radius:6px;cursor:pointer;font-size:1.9vh;line-height:1}
+#atc-root .atc-szbtn:hover{background:rgba(39,220,236,.2);color:#fff}

@@ -1,0 +1,58 @@
+/* ============================================================
+   airhud.css — glass cockpit HUD (PFD + MFD) overlay
+   Passive display (no NUI focus). Scoped under #airhud-root.
+   Panel image 1774x887; screen cutouts measured as %:
+     MFD (left)  left 13.30% top 17.36% w 30.27% h 54.90%
+     PFD (right) left 56.71% top 17.25% w 30.21% h 55.02%
+   ============================================================ */
+#airhud-root{
+  position:fixed; inset:0; z-index:8000; display:none; pointer-events:none;
+  font-family:'Saira Condensed','Oswald',sans-serif;
+}
+#airhud-root.airhud-on{display:block}
+
+#airhud-root .airhud-device{
+  position:absolute; left:50%; bottom:1.5vh; transform:translateX(-50%);
+  width:min(796.5px, 47.25vw); aspect-ratio:1774/887;
+}
+#airhud-root .airhud-bezel{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;
+  user-select:none;-webkit-user-drag:none}
+
+#airhud-root .airhud-screen{position:absolute;overflow:hidden;background:#01040a;
+  box-shadow:inset 0 0 22px rgba(0,0,0,.9)}
+#airhud-root #airhud-mfd{left:13.30%;top:17.36%;width:30.27%;height:54.90%}
+#airhud-root #airhud-pfd{left:56.71%;top:17.25%;width:30.21%;height:55.02%}
+#airhud-root .airhud-screen canvas{width:100%;height:100%;display:block}
+
+/* tiny tag echoing the registration plate, optional */
+#airhud-root .airhud-off{display:none}
+
+/* ===== reposition / edit mode ===== */
+#airhud-root.airhud-edit{pointer-events:auto}
+#airhud-root.airhud-edit .airhud-device{pointer-events:auto;cursor:move;
+  outline:2px dashed rgba(39,220,236,.85); outline-offset:6px}
+#airhud-root .airhud-editbar{display:none;position:absolute;left:50%;top:-8%;transform:translateX(-50%);
+  align-items:center;gap:1vw;white-space:nowrap;z-index:30;pointer-events:auto;
+  background:rgba(6,14,20,.94);border:1px solid rgba(39,220,236,.55);border-radius:10px;
+  padding:.6vh 1.1vw;font-family:'Saira Condensed','Oswald',sans-serif}
+#airhud-root.airhud-edit .airhud-editbar{display:flex}
+#airhud-root .airhud-editlabel{color:#27dcec;letter-spacing:2px;text-transform:uppercase;font-size:1.5vh}
+#airhud-root .airhud-btn{background:#16222d;border:1px solid rgba(39,220,236,.5);color:#cfe6ec;
+  border-radius:7px;padding:.55vh 1.1vw;cursor:pointer;font-family:'Saira Condensed',sans-serif;
+  font-size:1.5vh;letter-spacing:1px;text-transform:uppercase}
+#airhud-root .airhud-btn:hover{background:rgba(39,220,236,.2);color:#fff;border-color:#27dcec}
+#airhud-root .airhud-btn.ghost{border-color:rgba(126,158,178,.4);color:#9fb3c0;background:transparent}
+#airhud-root .airhud-btn.ghost:hover{color:#fff}
+
+/* shared edit toolbar (move/resize mode) */
+#ui-editbar{display:none;position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9500;
+  align-items:center;gap:12px;background:rgba(6,14,20,.95);border:1px solid rgba(39,220,236,.55);
+  border-radius:10px;padding:8px 14px;font-family:'Saira Condensed','Oswald',sans-serif;pointer-events:auto}
+.ui-edit-label{color:#7f96a4;letter-spacing:1.5px;text-transform:uppercase;font-size:13px}
+.ui-edit-btn{background:#16222d;border:1px solid rgba(39,220,236,.55);color:#cfe6ec;border-radius:7px;
+  padding:6px 14px;cursor:pointer;font-family:'Saira Condensed',sans-serif;font-size:13px;letter-spacing:1.5px;
+  text-transform:uppercase}
+.ui-edit-btn:hover{background:rgba(39,220,236,.2);color:#fff}
+.ui-edit-btn.ghost{border-color:rgba(126,158,178,.4);color:#9fb3c0;background:transparent}
+.ui-edit-btn.ghost:hover{color:#fff}
+#airhud-root .airhud-szbtn{min-width:30px;padding:.55vh .8vw}

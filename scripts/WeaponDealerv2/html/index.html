@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Firearm Registry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main id="app" class="registry hidden">
+        <header class="rg-header">
+            <div class="rg-header-left">
+                <div class="rg-eyebrow">Compliance Terminal</div>
+                <h1 class="rg-title">Legal Firearm Registry</h1>
+            </div>
+            <button class="rg-close" data-action="close" aria-label="Close">&times;</button>
+        </header>
+
+        <section class="rg-status">
+            <strong id="storeLabel" class="rg-status-value">-</strong>
+            <span class="rg-status-divider"></span>
+            <strong id="modeLabel" class="rg-status-mode">-</strong>
+            <span class="rg-status-divider"></span>
+            <span id="secureSessionBadge" class="rg-status-secure">Secure Session</span>
+        </section>
+
+        <nav class="rg-tabs">
+            <div class="rg-tabs-primary">
+                <button class="tab rg-tab active" data-tab="scan">Verify</button>
+                <button class="tab rg-tab" data-tab="active">Active</button>
+                <button class="tab rg-tab" data-tab="profile">Profile</button>
+                <button class="tab rg-tab" data-tab="pickup">Pickup</button>
+            </div>
+            <div class="rg-tabs-divider"></div>
+            <div class="rg-tabs-secondary">
+                <span class="rg-tabs-secondary-label">Session</span>
+                <div class="rg-tabs-secondary-rail">
+                    <button class="tab rg-tab rg-tab-ctx locked" data-tab="order" disabled>Weapon</button>
+                    <button class="tab rg-tab rg-tab-ctx locked" data-tab="accessories" disabled>Accessories</button>
+                    <button class="tab rg-tab rg-tab-ctx locked" data-tab="melee" disabled>Melee</button>
+                    <button class="tab rg-tab rg-tab-ctx locked" data-tab="assembly" disabled>Assembly</button>
+                    <button class="tab rg-tab rg-tab-ctx locked" data-tab="stock" disabled>Stock</button>
+                </div>
+            </div>
+        </nav>
+
+        <section class="panel rg-panel active" data-panel="scan">
+            <div class="section-head">
+                <h2>Document Intake</h2>
+                <span id="scanBadge" class="badge badge-muted muted">Waiting</span>
+            </div>
+
+            <div class="customer-picker" data-picker="scan"></div>
+
+            <div class="doc-cards" id="docCards">
+                <div class="doc-card" id="idCard">
+                    <div class="scan-beam"></div>
+                    <div class="doc-card-header">
+                        <span class="doc-card-title">Gov. ID</span>
+                        <span class="doc-card-icon">ID</span>
+                    </div>
+                    <div class="doc-field">
+                        <span class="doc-field-label">Citizen</span>
+                        <span class="doc-field-value" id="idCitizen">Awaiting scan</span>
+                    </div>
+                    <div class="doc-field">
+                        <span class="doc-field-label">Holder</span>
+                        <span class="doc-field-value" id="idHolder">Not loaded</span>
+                    </div>
+                    <div class="doc-field">
+                        <span class="doc-field-label">DOB</span>
+                        <span class="doc-field-value mono" id="idDob">--</span>
+                    </div>
+                    <div class="doc-watermark">IDENTITY</div>
+                    <div class="stamp-overlay"><div class="stamp verified" id="idStamp">Verified</div></div>
+                </div>
+
+                <div class="doc-card" id="licCard">
+                    <div class="scan-beam"></div>
+                    <div class="doc-card-header">
+                        <span class="doc-card-title">Weapon License</span>
+                        <span class="doc-card-icon">WL</span>
+                    </div>
+                    <div class="doc-field">
+                        <span class="doc-field-label">License</span>
+                        <span class="doc-field-value mono" id="licId">Awaiting scan</span>
+                    </div>
+                    <div class="doc-field">
+                        <span class="doc-field-label">Status</span>
+                        <span class="doc-field-value" id="licStatus">Not loaded</span>
+                    </div>
+                    <div class="doc-field">
+                        <span class="doc-field-label">Registry</span>
+                        <span class="doc-field-value mono" id="licRegistry">Pending</span>
+                    </div>
+                    <div class="doc-watermark">LICENSED</div>
+                    <div class="stamp-overlay"><div class="stamp verified" id="licStamp">Approved</div></div>
+                </div>
+            </div>
+
+            <div class="scan-status-bar">
+                <div id="scanOp" class="scan-status-op">Waiting for document swipe</div>
+                <div class="scan-progress-track"><div id="scanFill" class="scan-progress-fill"></div></div>
+                <div id="scanStepCounter" class="scan-step-counter">0 / 10 checks complete</div>
+            </div>
+
+            <div id="scanChecklist" class="checklist"></div>
+            <button class="primary btn-primary" data-action="scan">Swipe Documents</button>
+        </section>
+
+        <section class="panel rg-panel" data-panel="order">
+            <div class="section-head">
+                <h2>Weapon Order</h2>
+                <span class="badge badge-muted muted">Sale Desk</span>
+            </div>
+            <div class="customer-picker" data-picker="order"></div>
+            <div id="weaponCatalog" class="catalog"></div>
+        </section>
+
+        <section class="panel rg-panel" data-panel="accessories">
+            <div class="section-head">
+                <h2>Accessories Order</h2>
+                <span class="badge badge-muted muted">Verified Buyer</span>
+            </div>
+            <div id="accessoryCatalog" class="catalog"></div>
+        </section>
+
+        <section class="panel rg-panel" data-panel="melee">
+            <div class="section-head">
+                <h2>Melee Order</h2>
+                <span class="badge badge-muted muted">Verified Buyer</span>
+            </div>
+            <div id="meleeCatalog" class="catalog"></div>
+        </section>
+
+        <section class="panel rg-panel" data-panel="assembly">
+            <div class="section-head">
+                <h2>Assembly Station</h2>
+                <span class="badge badge-muted muted">Store Stash</span>
+            </div>
+            <div id="assemblyOrders" class="orders"></div>
+        </section>
+
+        <section class="panel rg-panel" data-panel="stock">
+            <div class="section-head">
+                <h2>Stock Order</h2>
+                <span class="badge badge-muted muted">Store Parts</span>
+            </div>
+            <div id="partsCatalog" class="catalog"></div>
+            <div class="stock-sticky-checkout">
+                <div id="partsCheckoutPanel" class="checkout"></div>
+                <button class="primary btn-primary" data-action="parts">Submit Stock Order</button>
+            </div>
+            <div id="partsOrders" class="orders"></div>
+        </section>
+
+        <section class="panel rg-panel" data-panel="active">
+            <div class="section-head">
+                <h2>Active Orders</h2>
+                <span class="badge badge-muted muted">Timer</span>
+            </div>
+            <div class="customer-picker" data-picker="active"></div>
+            <button class="primary btn-primary" data-action="active">Load Active Orders</button>
+            <div id="activeOrders" class="orders"></div>
+        </section>
+
+        <section class="panel rg-panel" data-panel="profile">
+            <div class="section-head">
+                <h2>Customer Profile</h2>
+                <span class="badge badge-muted muted">History</span>
+            </div>
+            <div class="customer-picker" data-picker="profile"></div>
+            <button class="primary btn-primary" data-action="profile">Load Profile</button>
+            <div id="profileCard" class="profile-card"></div>
+            <div id="profileOrders" class="orders"></div>
+        </section>
+
+        <section class="panel rg-panel" data-panel="pickup">
+            <div class="section-head">
+                <h2>Secure Pickup</h2>
+                <span class="badge badge-muted muted">Buyer Only</span>
+            </div>
+            <div id="pickupOrders" class="orders"></div>
+        </section>
+
+        <footer class="rg-footer">
+            <span class="rg-footer-text">Server-authorized firearm sales workflow</span>
+            <span class="rg-footer-ver">v1.3.0</span>
+        </footer>
+    </main>
+
+    <section id="confirmPrompt" class="registry confirm-terminal hidden">
+        <header class="rg-header">
+            <div class="rg-header-left">
+                <div id="confirmEyebrow" class="rg-eyebrow">Action Confirmation</div>
+                <h1 id="confirmTitle" class="rg-title">Legal Firearm Registry</h1>
+            </div>
+        </header>
+
+        <section class="rg-status">
+            <strong id="confirmPrimary" class="rg-status-value">-</strong>
+            <span class="rg-status-divider"></span>
+            <strong id="confirmSecondary" class="rg-status-mode">-</strong>
+            <span class="rg-status-divider"></span>
+            <span id="confirmSecure" class="rg-status-secure">Confirm</span>
+        </section>
+
+        <div class="confirm-body">
+            <div id="confirmMessage" class="confirm-message"></div>
+            <div class="consent-actions">
+                <button id="confirmCancel" class="consent-btn decline" type="button">Cancel</button>
+                <button id="confirmApprove" class="consent-btn approve" type="button">Confirm Payment</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="consentPrompt" class="registry consent-terminal hidden">
+        <header class="rg-header">
+            <div class="rg-header-left">
+                <div class="rg-eyebrow">Consent Required</div>
+                <h1 class="rg-title">Legal Firearm Registry</h1>
+            </div>
+        </header>
+
+        <section class="rg-status">
+            <div class="rg-status-item">
+                <span class="rg-status-label">Requesting Employee</span>
+                <strong id="consentEmployee" class="rg-status-value">-</strong>
+            </div>
+            <div class="rg-status-item">
+                <span class="rg-status-label">Store</span>
+                <strong id="consentStore" class="rg-status-value">-</strong>
+            </div>
+        </section>
+
+        <div class="consent-body">
+            <div class="doc-cards">
+                <div class="doc-card scanning" data-consent-card="id">
+                    <div class="scan-beam"></div>
+                    <div class="doc-card-header">
+                        <span class="doc-card-title">Gov. ID</span>
+                        <span class="doc-card-icon">ID</span>
+                    </div>
+                    <div class="doc-field">
+                        <span class="doc-field-label">Access</span>
+                        <span class="doc-field-value">Identity metadata</span>
+                    </div>
+                    <div class="doc-field">
+                        <span class="doc-field-label">Purpose</span>
+                        <span class="doc-field-value">Firearm sale verification</span>
+                    </div>
+                    <div class="doc-watermark">CONSENT</div>
+                    <div class="stamp-overlay"><div class="stamp verified" data-consent-stamp="id">Approved</div></div>
+                </div>
+
+                <div class="doc-card scanning" data-consent-card="license">
+                    <div class="scan-beam"></div>
+                    <div class="doc-card-header">
+                        <span class="doc-card-title">Weapon License</span>
+                        <span class="doc-card-icon">WL</span>
+                    </div>
+                    <div class="doc-field">
+                        <span class="doc-field-label">Access</span>
+                        <span class="doc-field-value">License record</span>
+                    </div>
+                    <div class="doc-field">
+                        <span class="doc-field-label">Purpose</span>
+                        <span class="doc-field-value">Registry compliance</span>
+                    </div>
+                    <div class="doc-watermark">REVIEW</div>
+                    <div class="stamp-overlay"><div class="stamp verified" data-consent-stamp="license">Approved</div></div>
+                </div>
+            </div>
+
+            <div class="scan-status-bar">
+                <div class="scan-status-op">Approve this request only if you are completing a legal firearm purchase or document check.</div>
+                <div class="scan-progress-track"><div class="scan-progress-fill consent-fill"></div></div>
+                <div class="scan-step-counter">Document scan consent pending</div>
+            </div>
+
+            <div class="consent-actions">
+                <button class="consent-btn decline" data-consent="decline">Decline</button>
+                <button class="consent-btn approve" data-consent="approve">Approve Scan</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CART DRAWER — shared by Weapon / Accessories / Melee tabs -->
+    <div id="cartDrawer" class="cart-drawer" aria-label="Order Cart">
+        <div class="cart-drawer__header">
+            <div class="cart-drawer__eyebrow">
+                <span class="cart-drawer__dot"></span>
+                <span class="cart-drawer__label cart-label--unified">Secure Order Cart</span>
+            </div>
+        </div>
+        <div class="cart-drawer__body">
+            <div class="cart-section cart-section--unified">
+                <div id="checkoutPanel" class="checkout"></div>
+            </div>
+        </div>
+        <div class="cart-drawer__footer">
+            <button class="primary btn-primary cart-drawer__btn cart-btn--unified" data-action="order">Submit Cart</button>
+        </div>
+        <div class="cart-drawer__connector"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

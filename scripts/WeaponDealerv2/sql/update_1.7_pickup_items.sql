@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS `weapon_pickup_items` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `buyer_identifier` VARCHAR(64) NOT NULL,
+    `buyer_name` VARCHAR(128) NOT NULL,
+    `seller_identifier` VARCHAR(64) NOT NULL,
+    `seller_name` VARCHAR(128) NOT NULL,
+    `store_id` VARCHAR(64) NOT NULL,
+    `item_type` VARCHAR(32) NOT NULL,
+    `item_name` VARCHAR(64) NOT NULL,
+    `item_label` VARCHAR(128) NOT NULL,
+    `count` INT UNSIGNED NOT NULL DEFAULT 1,
+    `price` INT UNSIGNED NOT NULL DEFAULT 0,
+    `metadata` JSON NULL DEFAULT NULL,
+    `payment_method` VARCHAR(16) NULL DEFAULT NULL,
+    `status` ENUM('ready', 'picked_up', 'cancelled') NOT NULL DEFAULT 'ready',
+    `ready_at` DATETIME NOT NULL,
+    `picked_up_at` DATETIME NULL DEFAULT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_weapon_pickup_items_buyer_status` (`buyer_identifier`, `status`),
+    KEY `idx_weapon_pickup_items_store_status` (`store_id`, `status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

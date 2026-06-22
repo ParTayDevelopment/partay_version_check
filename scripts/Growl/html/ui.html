@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stomach Growl</title>
+</head>
+<body>
+    <audio id="growl" src="sounds/stomach_growl.ogg" preload="auto"></audio>
+    <script>
+        window.addEventListener('message', async function(event) {
+            if (event.data.transactionType === 'playSound') {
+                const sound = document.getElementById('growl');
+                const requestedPath = event.data.transactionFile || '';
+                const soundPath = requestedPath.startsWith('nui://') ? 'sounds/stomach_growl.ogg' : requestedPath || 'sounds/stomach_growl.ogg';
+
+                if (sound.getAttribute('src') !== soundPath) {
+                    sound.setAttribute('src', soundPath);
+                    sound.load();
+                }
+
+                sound.volume = Number(event.data.transactionVolume) || 1;
+                sound.currentTime = 0;
+
+                try {
+                    await sound.play();
+                } catch (error) {
+                    console.error('Failed to play audio:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

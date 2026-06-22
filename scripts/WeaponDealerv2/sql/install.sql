@@ -1,0 +1,182 @@
+CREATE TABLE IF NOT EXISTS `weapon_orders` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `buyer_identifier` VARCHAR(64) NOT NULL,
+    `buyer_name` VARCHAR(128) NOT NULL,
+    `seller_identifier` VARCHAR(64) NOT NULL,
+    `seller_name` VARCHAR(128) NOT NULL,
+    `store_id` VARCHAR(64) NOT NULL,
+    `weapon_item` VARCHAR(64) NOT NULL,
+    `weapon_label` VARCHAR(128) NOT NULL,
+    `price` INT UNSIGNED NOT NULL DEFAULT 0,
+    `ammo_item` VARCHAR(64) NULL DEFAULT NULL,
+    `ammo_count` INT UNSIGNED NOT NULL DEFAULT 0,
+    `ammo_price` INT UNSIGNED NOT NULL DEFAULT 0,
+    `attachments` JSON NULL DEFAULT NULL,
+    `license_id` VARCHAR(128) NOT NULL,
+    `payment_method` VARCHAR(16) NULL DEFAULT NULL,
+    `status` ENUM('pending_assembly', 'approved', 'ready', 'picked_up', 'cancelled', 'revoked', 'confiscated', 'transferred') NOT NULL DEFAULT 'approved',
+    `ready_at` DATETIME NOT NULL,
+    `picked_up_at` DATETIME NULL DEFAULT NULL,
+    `assembled_by` VARCHAR(64) NULL DEFAULT NULL,
+    `assembled_by_name` VARCHAR(128) NULL DEFAULT NULL,
+    `assembled_at` DATETIME NULL DEFAULT NULL,
+    `refunded_by` VARCHAR(64) NULL DEFAULT NULL,
+    `refunded_by_name` VARCHAR(128) NULL DEFAULT NULL,
+    `refunded_at` DATETIME NULL DEFAULT NULL,
+    `registered_weapon_id` INT UNSIGNED NULL DEFAULT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_weapon_orders_buyer_status` (`buyer_identifier`, `status`),
+    KEY `idx_weapon_orders_ready` (`status`, `ready_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `registered_weapons` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `serial` VARCHAR(32) NOT NULL,
+    `order_id` INT UNSIGNED NOT NULL,
+    `owner_identifier` VARCHAR(64) NOT NULL,
+    `owner_name` VARCHAR(128) NOT NULL,
+    `seller_identifier` VARCHAR(64) NOT NULL,
+    `seller_name` VARCHAR(128) NOT NULL,
+    `store_id` VARCHAR(64) NOT NULL,
+    `weapon_item` VARCHAR(64) NOT NULL,
+    `weapon_label` VARCHAR(128) NOT NULL,
+    `license_id` VARCHAR(128) NOT NULL,
+    `tablet_weapon_id` INT NULL DEFAULT NULL,
+    `status` ENUM('active', 'revoked', 'confiscated', 'transferred') NOT NULL DEFAULT 'active',
+    `metadata` JSON NULL DEFAULT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uniq_registered_weapons_serial` (`serial`),
+    KEY `idx_registered_weapons_owner` (`owner_identifier`),
+    KEY `idx_registered_weapons_order` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `weapon_sales_logs` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `action` VARCHAR(64) NOT NULL,
+    `message` VARCHAR(255) NOT NULL,
+    `data` JSON NULL DEFAULT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_weapon_sales_logs_action` (`action`),
+    KEY `idx_weapon_sales_logs_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `weapon_part_orders` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `store_id` VARCHAR(64) NOT NULL,
+    `employee_identifier` VARCHAR(64) NOT NULL,
+    `employee_name` VARCHAR(128) NOT NULL,
+    `payment_source` VARCHAR(16) NOT NULL,
+    `total` INT UNSIGNED NOT NULL DEFAULT 0,
+    `items` JSON NOT NULL,
+    `status` ENUM('pending_delivery', 'delivered', 'cancelled') NOT NULL DEFAULT 'pending_delivery',
+    `delivery_at` DATETIME NOT NULL,
+    `delivered_at` DATETIME NULL DEFAULT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_weapon_part_orders_store_status` (`store_id`, `status`),
+    KEY `idx_weapon_part_orders_delivery` (`status`, `delivery_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `weapon_pickup_items` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `buyer_identifier` VARCHAR(64) NOT NULL,
+    `buyer_name` VARCHAR(128) NOT NULL,
+    `seller_identifier` VARCHAR(64) NOT NULL,
+    `seller_name` VARCHAR(128) NOT NULL,
+    `store_id` VARCHAR(64) NOT NULL,
+    `item_type` VARCHAR(32) NOT NULL,
+    `item_name` VARCHAR(64) NOT NULL,
+    `item_label` VARCHAR(128) NOT NULL,
+    `count` INT UNSIGNED NOT NULL DEFAULT 1,
+    `price` INT UNSIGNED NOT NULL DEFAULT 0,
+    `metadata` JSON NULL DEFAULT NULL,
+    `payment_method` VARCHAR(16) NULL DEFAULT NULL,
+    `status` ENUM('ready', 'picked_up', 'cancelled') NOT NULL DEFAULT 'ready',
+    `ready_at` DATETIME NOT NULL,
+    `picked_up_at` DATETIME NULL DEFAULT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_weapon_pickup_items_buyer_status` (`buyer_identifier`, `status`),
+    KEY `idx_weapon_pickup_items_store_status` (`store_id`, `status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `weapon_trade_ins` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `store_id` VARCHAR(64) NOT NULL,
+    `buyer_identifier` VARCHAR(64) NOT NULL,
+    `employee_identifier` VARCHAR(64) NOT NULL,
+    `employee_name` VARCHAR(128) NOT NULL,
+    `item` VARCHAR(64) NOT NULL,
+    `label` VARCHAR(128) NOT NULL,
+    `serial` VARCHAR(64) NULL DEFAULT NULL,
+    `slot` INT UNSIGNED NULL DEFAULT NULL,
+    `value` INT UNSIGNED NOT NULL DEFAULT 0,
+    `registered` TINYINT(1) NOT NULL DEFAULT 0,
+    `owned` TINYINT(1) NOT NULL DEFAULT 0,
+    `primary_order_id` INT UNSIGNED NULL DEFAULT NULL,
+    `order_ids` JSON NULL DEFAULT NULL,
+    `metadata` JSON NULL DEFAULT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_weapon_trade_ins_buyer` (`buyer_identifier`),
+    KEY `idx_weapon_trade_ins_primary_order` (`primary_order_id`),
+    KEY `idx_weapon_trade_ins_serial` (`serial`),
+    KEY `idx_weapon_trade_ins_store` (`store_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `weapon_test_sessions` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `buyer_identifier` VARCHAR(64) NOT NULL,
+    `employee_identifier` VARCHAR(64) NOT NULL,
+    `store_id` VARCHAR(64) NOT NULL,
+    `weapon_item` VARCHAR(64) NOT NULL,
+    `started_at` DATETIME NOT NULL,
+    `ended_at` DATETIME NULL DEFAULT NULL,
+    `end_reason` VARCHAR(64) NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_weapon_test_sessions_buyer` (`buyer_identifier`),
+    KEY `idx_weapon_test_sessions_active` (`ended_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `license_scan_logs` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `employee_identifier` VARCHAR(64) NOT NULL,
+    `buyer_identifier` VARCHAR(64) NOT NULL,
+    `store_id` VARCHAR(64) NOT NULL,
+    `result` VARCHAR(32) NOT NULL,
+    `reason` VARCHAR(128) NULL DEFAULT NULL,
+    `metadata` JSON NULL DEFAULT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_license_scan_logs_buyer` (`buyer_identifier`),
+    KEY `idx_license_scan_logs_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `weapon_customer_profiles` (
+    `citizenid` VARCHAR(64) NOT NULL,
+    `full_name` VARCHAR(128) NOT NULL,
+    `first_name` VARCHAR(64) NULL DEFAULT NULL,
+    `last_name` VARCHAR(64) NULL DEFAULT NULL,
+    `dob` VARCHAR(32) NULL DEFAULT NULL,
+    `license_id` VARCHAR(128) NULL DEFAULT NULL,
+    `license_item` VARCHAR(64) NOT NULL,
+    `license_status` VARCHAR(32) NOT NULL DEFAULT 'valid',
+    `license_expiry` VARCHAR(64) NULL DEFAULT NULL,
+    `id_metadata` JSON NULL DEFAULT NULL,
+    `license_metadata` JSON NULL DEFAULT NULL,
+    `first_verified_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_verified_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_verified_by` VARCHAR(64) NULL DEFAULT NULL,
+    `last_store_id` VARCHAR(64) NULL DEFAULT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`citizenid`),
+    KEY `idx_weapon_customer_profiles_name` (`full_name`),
+    KEY `idx_weapon_customer_profiles_license` (`license_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

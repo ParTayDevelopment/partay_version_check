@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Basic car alarm">
+  <rect width="256" height="256" rx="42" fill="#151a22"/>
+  <rect x="48" y="54" width="160" height="148" rx="26" fill="#252d38" stroke="#6f7d8f" stroke-width="8"/>
+  <circle cx="128" cy="128" r="44" fill="#e23d3d"/>
+  <path d="M128 89v44l28 22" fill="none" stroke="#fff7ec" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M72 48 52 25M184 48l20-23M77 213l-17 18M179 213l17 18" stroke="#6f7d8f" stroke-width="10" stroke-linecap="round"/>
+  <path d="M93 82c20-13 50-13 70 0" fill="none" stroke="#fff7ec" stroke-width="10" stroke-linecap="round" opacity=".9"/>
+</svg>

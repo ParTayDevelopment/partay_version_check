@@ -1,0 +1,349 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>No Love Lost - New Citizen Terminal</title>
+<style>
+  html { background: transparent !important; }
+  body:not(.ui-visible) {
+    background: transparent !important;
+  }
+  body:not(.ui-visible)::before,
+  body:not(.ui-visible) .terminal-frame {
+    display: none !important;
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="terminal-frame">
+
+  <!-- Header -->
+  <div class="terminal-header">
+    <div class="header-brand">
+      <div class="brand-icon"><img src="myLogo.png" alt="No Love Lost"></div>
+      <div class="brand-text">
+        <h1>NO LOVE LOST</h1>
+        <div class="header-clearance">
+          <div class="header-clearance-top">
+            <span>NEW CITIZEN CLEARANCE</span>
+            <span id="prog-label">2 / 7 COMPLETE</span>
+          </div>
+          <div class="progress-wrap"><div class="progress-bar" id="prog-bar" style="width:28%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="header-player">
+        <div class="player-name" id="player-name">NEW CITIZEN</div>
+        <div class="player-status" id="player-status">NOT CLEARED - STARTER ZONE</div>
+      </div>
+      <button class="header-close" onclick="closeUi()">&times;</button>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <button class="tab-btn" data-tab="starter" onclick="requestTab('starter',this)">Starter Pack</button>
+    <button class="tab-btn active" data-tab="checklist" onclick="requestTab('checklist',this)">
+      Checklist <span class="tab-badge" id="pending-badge">5</span>
+    </button>
+    <button class="tab-btn" data-tab="cityinfo" onclick="requestTab('cityinfo',this)">City Info</button>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+
+    <!-- CHECKLIST TAB -->
+    <div class="tab-panel active" id="tab-checklist">
+      <div class="task-grid" id="task-grid">
+        <div class="task-card done">
+          <div class="task-icon-wrap">&#128100;</div>
+          <div class="task-info">
+            <div class="task-name">Identity Established</div>
+            <div class="task-desc">Completed during character creation - registered in the city database</div>
+          </div>
+          <div class="task-status"><span class="status-pill pill-done">Done</span></div>
+        </div>
+
+        <div class="task-card done">
+          <div class="task-icon-wrap">&#128179;</div>
+          <div class="task-info">
+            <div class="task-name">Register Official ID</div>
+            <div class="task-desc">Your official ID card has been issued - carry it at all times</div>
+          </div>
+          <div class="task-status"><span class="status-pill pill-done">Done</span></div>
+        </div>
+
+        <div class="task-card active clickable" onclick="requestTab('starter', document.querySelector('.tab-btn[data-tab=&quot;starter&quot;]'))">
+          <div class="task-icon-wrap">&#127890;</div>
+          <div class="task-info">
+            <div class="task-name">Choose Starter Essentials</div>
+            <div class="task-desc">Pick 6 items to get you started in No Love Lost - one time only</div>
+          </div>
+          <div class="task-status">
+            <span class="status-pill pill-pending">Pending</span>
+            <span class="action-arrow">&rsaquo;</span>
+          </div>
+        </div>
+
+        <div class="task-card">
+          <div class="task-icon-wrap">&#128188;</div>
+          <div class="task-info">
+            <div class="task-name">Go to Job Center</div>
+            <div class="task-desc">Go to the Job Center and speak with the counselor to get a job.</div>
+          </div>
+          <div class="task-status">
+            <span class="status-pill pill-locked">Counselor</span>
+          </div>
+        </div>
+
+        <div class="task-card">
+          <div class="task-icon-wrap">&#128690;</div>
+          <div class="task-info">
+            <div class="task-name">Ride a Bike - 10.0 mi Required</div>
+            <div class="task-desc">0.0 mi / 10.0 mi tracked on approved starter bikes</div>
+          </div>
+          <div class="task-status"><span class="status-pill pill-locked">Locked</span></div>
+        </div>
+
+        <div class="task-card">
+          <div class="task-icon-wrap">&#127974;</div>
+          <div class="task-info">
+            <div class="task-name">Save Money in Bank</div>
+            <div class="task-desc">$0 / $20,000 required - deposit at any Fleeca Bank branch</div>
+          </div>
+          <div class="task-status"><span class="status-pill pill-locked">Locked</span></div>
+        </div>
+
+        <div class="task-card">
+          <div class="task-icon-wrap">&#9200;</div>
+          <div class="task-info">
+            <div class="task-name">Stay Active - 45 Min Playtime</div>
+            <div class="task-desc">0 min / 45 min required - time accrues automatically</div>
+          </div>
+          <div class="task-status"><span class="status-pill pill-locked">0 / 45m</span></div>
+        </div>
+      </div>
+
+      <div class="clearance-box locked" id="clearance-box">
+        <span class="clearance-icon">&#128274;</span>
+        <div>
+          <div style="font-size:14px;font-weight:700;letter-spacing:2px;">NOT CLEARED FOR DEPARTURE</div>
+          <div style="font-size:11px;font-weight:400;margin-top:2px;color:rgba(33,216,255,0.78);">Complete all tasks above to unlock city departure clearance</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STARTER PACK TAB -->
+    <div class="tab-panel" id="tab-starter">
+      <div class="pack-sticky-header">
+        <div class="pack-left-title">STARTER ESSENTIALS <span id="profile-label"></span></div>
+        <div class="pack-subtitle">Choose within your <span id="budget-label">$2,500 budget</span> and starter slot limit. Choose wisely.</div>
+        <div class="budget-wrap">
+          <div class="budget-row">
+            <span id="budget-used">$0 USED</span>
+            <span id="budget-remaining">$2,500 REMAINING</span>
+          </div>
+          <div class="budget-meter"><div class="budget-meter-fill" id="budget-meter-fill"></div></div>
+        </div>
+      </div>
+      <div class="pack-layout">
+        <div class="pack-main-col">
+          <div class="items-grid" id="items-grid">
+            <!-- Populated by JS -->
+          </div>
+          <div class="vehicle-section" id="vehicle-section">
+            <div class="vehicle-section-title">STARTER VEHICLE</div>
+            <div class="vehicle-grid" id="vehicle-grid"></div>
+          </div>
+          <div class="bonus-section" id="bonus-section">
+            <div class="bonus-title" id="bonus-title">WELCOME BONUS</div>
+            <div class="bonus-reel" id="bonus-reel">
+              <span id="bonus-reel-label">Bonus item will reveal when you claim.</span>
+            </div>
+          </div>
+        </div>
+        <div class="pack-sidebar">
+          <div class="pack-summary">
+            <div class="pack-summary-title">YOUR PACK</div>
+            <div class="selected-slots" id="selected-slots"></div>
+            <div class="slot-counter"><span class="count" id="slot-count">0</span><span class="total"> / 6</span></div>
+          </div>
+          <button class="btn-claim" id="btn-claim" disabled onclick="claimKit()">CLAIM PACK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- JOBS TAB -->
+    <div class="tab-panel" id="tab-jobs">
+      <div style="margin-bottom:14px;">
+        <div class="section-kicker">JOB <span>CENTER</span></div>
+        <div class="section-note">Select a job to begin your hustle in No Love Lost. You can change jobs later.</div>
+      </div>
+      <div class="jobs-grid" id="jobs-grid">
+        <div class="job-card" id="job-farmer" onclick="selectJob('farmer',this)">
+          <span class="job-emoji">&#127806;</span>
+          <div class="job-name">FARMER</div>
+          <span class="job-tag">CITY JOB</span>
+          <div class="job-desc">Work the fields north of the city. Grow and harvest crops to sell at the market. Steady income with low risk.</div>
+          <div class="job-stats">
+            <div class="job-stat"><strong>$200-400</strong> Per harvest</div>
+            <div class="job-stat"><strong>LOW</strong> Risk</div>
+            <div class="job-stat"><strong>AREA</strong> Paleto</div>
+          </div>
+          <button class="job-select-btn">SELECT JOB -&gt;</button>
+        </div>
+        <div class="job-card" id="job-hunting" onclick="selectJob('hunting',this)">
+          <span class="job-emoji">&#127993;</span>
+          <div class="job-name">HUNTER</div>
+          <span class="job-tag">CITY JOB</span>
+          <div class="job-desc">Track and hunt wildlife in the Blaine County wilderness. Sell pelts and meat at the butcher shop.</div>
+          <div class="job-stats">
+            <div class="job-stat"><strong>$300-600</strong> Per trip</div>
+            <div class="job-stat"><strong>MED</strong> Risk</div>
+            <div class="job-stat"><strong>AREA</strong> Wilderness</div>
+          </div>
+          <button class="job-select-btn">SELECT JOB -&gt;</button>
+        </div>
+        <div class="job-card" id="job-lumberjack" onclick="selectJob('lumberjack',this)">
+          <span class="job-emoji">&#129683;</span>
+          <div class="job-name">LUMBERJACK</div>
+          <span class="job-tag">CITY JOB</span>
+          <div class="job-desc">Cut timber in the Tongva Hills forests. Deliver loads to the lumber yard for consistent pay.</div>
+          <div class="job-stats">
+            <div class="job-stat"><strong>$250-500</strong> Per load</div>
+            <div class="job-stat"><strong>LOW</strong> Risk</div>
+            <div class="job-stat"><strong>AREA</strong> Tongva</div>
+          </div>
+          <button class="job-select-btn">SELECT JOB -&gt;</button>
+        </div>
+        <div class="job-card" id="job-miner" onclick="selectJob('miner',this)">
+          <span class="job-emoji">&#9935;</span>
+          <div class="job-name">MINER</div>
+          <span class="job-tag">CITY JOB</span>
+          <div class="job-desc">Extract ore and minerals from the Alamo Sea mines. High payout but physically demanding work.</div>
+          <div class="job-stats">
+            <div class="job-stat"><strong>$400-800</strong> Per run</div>
+            <div class="job-stat"><strong>MED</strong> Risk</div>
+            <div class="job-stat"><strong>AREA</strong> Alamo</div>
+          </div>
+          <button class="job-select-btn">SELECT JOB -&gt;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CITY INFO TAB -->
+    <div class="tab-panel" id="tab-cityinfo">
+      <div class="cityinfo-grid">
+        <div class="info-card full">
+          <div class="info-card-header">
+            <div class="info-card-icon">&#127961;</div>
+            <div class="info-card-title">WELCOME TO NO LOVE LOST</div>
+          </div>
+          <div class="welcome-text">
+            Welcome to <span class="highlight">No Love Lost</span>. Before leaving the city, every new citizen must complete the
+            <span class="purple">New Citizen Checklist</span>. This process confirms your identity, issues your starter essentials,
+            connects you with the Job Center, and makes sure you are ready for serious roleplay before leaving the starter boundary.
+            Until every checklist requirement is complete, you will remain within city limits and will not be cleared to leave.
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-card-icon">&#128203;</div>
+            <div class="info-card-title">CHECKLIST CLEARANCE</div>
+          </div>
+          <div class="info-rule"><span class="rule-num">01</span>Complete each checklist task before attempting to leave the city.</div>
+          <div class="info-rule"><span class="rule-num">02</span>Register your ID and license so your character is properly recorded in city systems.</div>
+          <div class="info-rule"><span class="rule-num">03</span>Select your starter essentials carefully. These items are intended to support your first steps in the city.</div>
+          <div class="info-rule"><span class="rule-num">04</span>Stay active, build your bank balance, and finish the required bike distance before city clearance is granted.</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-card-icon">&#128188;</div>
+            <div class="info-card-title">JOB CENTER</div>
+          </div>
+          <div class="info-rule"><span class="rule-num">01</span>Go to the Job Center and speak with the counselor to choose your first city job.</div>
+          <div class="info-rule"><span class="rule-num">02</span>Your first job choice completes the Job Center checklist task.</div>
+          <div class="info-rule"><span class="rule-num">03</span>You can return to the Job Center later to switch between available city jobs.</div>
+          <div class="info-rule"><span class="rule-num">04</span>Rural and long-route jobs unlock after you are cleared to leave the city.</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-card-icon">&#128176;</div>
+            <div class="info-card-title">CITY ECONOMY</div>
+          </div>
+          <div class="bank-info">
+            <div class="bank-stat"><div class="bank-stat-val">$20,000</div><div class="bank-stat-label">Bank Req.</div></div>
+            <div class="bank-stat"><div class="bank-stat-val">45 min</div><div class="bank-stat-label">Playtime Req.</div></div>
+            <div class="bank-stat"><div class="bank-stat-val">4</div><div class="bank-stat-label">City Jobs</div></div>
+            <div class="bank-stat"><div class="bank-stat-val">REAL</div><div class="bank-stat-label">Economy</div></div>
+          </div>
+          <div class="info-note">
+            No Love Lost uses a realistic economy with some inflation on select items, services, and city expenses.
+            Save your money, plan purchases carefully, and expect higher-value items to require steady work and patience.
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-card-icon">&#128241;</div>
+            <div class="info-card-title">AIRPORT TRANSPORTATION</div>
+          </div>
+          <div class="info-rule"><span class="rule-num">01</span>Choose a phone in your starter essentials before claiming your pack.</div>
+          <div class="info-rule"><span class="rule-num">02</span>Use your phone to download the Taxi app after you arrive in the city.</div>
+          <div class="info-rule"><span class="rule-num">03</span>Taxi rides are the recommended cost-effective way to leave the airport and move around No Love Lost.</div>
+          <div class="info-rule"><span class="rule-num">04</span>If you skip the phone, you may be stuck at the airport without affordable transportation.</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="info-card-icon">&#127873;</div>
+            <div class="info-card-title">STARTER ITEMS</div>
+          </div>
+          <div class="info-rule"><span class="rule-num">01</span>Your starter pack is meant to help you begin roleplay, not skip progression.</div>
+          <div class="info-rule"><span class="rule-num">02</span>Some starter items may be limited or one-time selections, so choose what fits your character best.</div>
+          <div class="info-rule"><span class="rule-num">03</span>If something goes wrong with your items or onboarding, open a Discord ticket instead of repeatedly retrying actions.</div>
+          <div class="info-rule"><span class="rule-num">04</span>A staff member will review your ticket and assist you as soon as possible.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-item"><div class="status-dot green"></div>SERVER ONLINE</div>
+    <div class="status-item"><div class="status-dot purple"></div>STARTER ZONE ACTIVE</div>
+    <div class="status-item"><div class="status-dot gold"></div><span id="bank-status">BANK: $0 / $20,000</span></div>
+    <div class="status-item" style="margin-left:auto;"><div class="status-dot"></div><span id="playtime-status">PLAYTIME: 0:00 / 45:00</span></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="confirm-overlay" id="job-confirm-overlay">
+  <div class="confirm-modal">
+    <div class="confirm-title" id="job-confirm-title">CONFIRM JOB</div>
+    <div class="confirm-body" id="job-confirm-body">
+      Set your city job. You can return to the Job Center later to change available city jobs.
+    </div>
+    <div class="confirm-actions">
+      <button class="confirm-btn secondary" id="job-confirm-secondary" onclick="closeJobConfirm()">CANCEL</button>
+      <button class="confirm-btn primary" id="job-confirm-primary" onclick="confirmJobSelection()">CONFIRM JOB</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,55 @@
+[
+  {
+    "id": "lsia",
+    "label": "Los Santos International",
+    "tower": "LSIA Tower",
+    "atc": { "coords": { "x": -980.49, "y": -2635.12, "z": 84.27, "w": 145.42 }, "coverageRadius": 2200 },
+    "airspace": { "enabled": true, "radius": 2652, "altitudeMin": 0, "altitudeMax": 1800 },
+    "blip": { "enabled": true, "sprite": 90, "color": 3, "scale": 0.85 },
+    "runways": [
+      {
+        "label": "Runway 03/21",
+        "points": [{"x":0,"y":0,"z":84},{"x":1,"y":0,"z":84},{"x":1,"y":1,"z":84},{"x":0,"y":1,"z":84}],
+        "zones": {
+          "taxiHold": { "type": "sphere", "coords": {"x":-1000,"y":-2600,"z":84}, "radius": 40 },
+          "landingZone": { "type": "box", "coords": {"x":-1100,"y":-2700,"z":84}, "length": 70, "width": 25 }
+        }
+      }
+    ],
+    "gates": [
+      { "label": "Gate A1", "gate": "A1", "aircraftModel": "shamal", "aircraftBoardingRadius": 28,
+        "aircraftSpawn": { "x": -1020.1, "y": -2660.4, "z": 13.5, "w": 240.0 } }
+    ],
+    "zones": {
+      "approachZone": { "type": "poly", "points": [{"x":1},{"x":2},{"x":3},{"x":4},{"x":5},{"x":6}] }
+    },
+    "restricted": false,
+    "international": false,
+    "updatedAt": "2026-06-20 18:53:00"
+  },
+  {
+    "id": "sandy",
+    "label": "Sandy Shores Airfield",
+    "tower": "Sandy Tower",
+    "atc": { "coords": { "x": 1702.24, "y": 3291.23, "z": 50.61, "w": 74.21 }, "coverageRadius": 1000 },
+    "airspace": { "enabled": true, "radius": 864, "altitudeMin": 0, "altitudeMax": 1400 },
+    "blip": { "enabled": true, "sprite": 90, "color": 4, "scale": 0.85 },
+    "runways": [],
+    "gates": [],
+    "zones": {},
+    "restricted": false
+  },
+  {
+    "id": "zancudo",
+    "label": "Fort Zancudo",
+    "tower": "Zancudo Tower",
+    "atc": { "coords": { "x": -2356.74, "y": 3251.41, "z": 103.77, "w": 139.12 }, "coverageRadius": 1600 },
+    "airspace": { "enabled": true, "radius": 3000, "altitudeMin": 0, "altitudeMax": 2200 },
+    "blip": { "enabled": true, "sprite": 90, "color": 1, "scale": 0.85 },
+    "runways": [],
+    "gates": [],
+    "zones": {},
+    "restricted": true,
+    "restrictedMessage": "Restricted military airspace. Leave the area immediately."
+  }
+]

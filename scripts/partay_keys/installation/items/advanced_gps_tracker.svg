@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Advanced GPS tracker">
+  <rect width="256" height="256" rx="42" fill="#0f1720"/>
+  <rect x="48" y="42" width="160" height="172" rx="28" fill="#222f3d" stroke="#5be0ff" stroke-width="8"/>
+  <circle cx="128" cy="128" r="42" fill="#5be0ff"/>
+  <circle cx="128" cy="128" r="15" fill="#0f1720"/>
+  <path d="M128 63c40 0 72 32 72 72M128 193c-40 0-72-32-72-72" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+  <path d="M128 26v35M128 195v35M26 128h35M195 128h35" stroke="#5be0ff" stroke-width="10" stroke-linecap="round"/>
+  <path d="M89 91 62 64M167 91l27-27M89 165l-27 27M167 165l27 27" stroke="#f7c948" stroke-width="8" stroke-linecap="round"/>
+  <path d="M96 213h64" stroke="#f7c948" stroke-width="9" stroke-linecap="round"/>
+</svg>

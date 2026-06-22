@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Empty advanced fob shell">
+  <defs>
+    <linearGradient id="case" x1="42" y1="26" x2="214" y2="230" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#312e81"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="80" y1="64" x2="184" y2="196" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#c4b5fd"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="34" fill="#111827"/>
+  <path d="M89 30h78c24 0 43 19 43 43v110c0 24-19 43-43 43H89c-24 0-43-19-43-43V73c0-24 19-43 43-43Z" fill="url(#case)" stroke="#4c1d95" stroke-width="8"/>
+  <circle cx="128" cy="67" r="16" fill="#020617" stroke="#a78bfa" stroke-width="7"/>
+  <rect x="75" y="102" width="106" height="84" rx="18" fill="#020617" stroke="url(#accent)" stroke-width="7" stroke-dasharray="12 9"/>
+  <path d="M101 130h54M101 157h54" stroke="#c4b5fd" stroke-width="8" stroke-linecap="round"/>
+  <path d="M84 211h88" stroke="#a78bfa" stroke-width="10" stroke-linecap="round"/>
+</svg>

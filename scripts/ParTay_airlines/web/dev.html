@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Airport Creator — dev preview</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* dev-only: fake the in-game backdrop so the tablet reads in a browser */
+    body { background:
+      linear-gradient(180deg, #16323f 0%, #29333a 40%, #3a3530 100%); }
+    #devbar { position: fixed; top: 10px; left: 10px; z-index: 99;
+      font: 12px var(--mono); color: #9fb4c2; background: rgba(0,0,0,0.4);
+      padding: 6px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); }
+  </style>
+</head>
+<body>
+  <div id="devbar">DEV PREVIEW · placement &amp; save are stubbed</div>
+
+  <div id="root">
+    <div class="scrim">
+      <div class="tablet">
+        <header class="strip">
+          <div class="brand"><span class="eyebrow">ParTay Airlines</span><span class="name">Airport Creator</span></div>
+          <div class="station"><select id="stationSelect" title="Active station"></select></div>
+          <button class="btn" id="newAirportBtn">New airport</button>
+          <button class="btn btn--primary" id="saveBtn">Save</button>
+          <div class="grow"></div>
+          <div class="status" id="statusPill" data-state="ready"><span class="led"></span><span id="statusText">Ready</span></div>
+        </header>
+        <div class="body">
+          <nav class="rail" id="rail">
+            <button class="tab" data-tab="overview"><span class="dot"></span>Overview</button>
+            <button class="tab" data-tab="atc"><span class="dot"></span>ATC</button>
+            <button class="tab" data-tab="runways"><span class="dot"></span>Runways</button>
+            <button class="tab" data-tab="gates"><span class="dot"></span>Gates</button>
+            <button class="tab" data-tab="zones"><span class="dot"></span>Zones</button>
+            <button class="tab" data-tab="blip"><span class="dot"></span>Blip</button>
+            <button class="tab" data-tab="restricted"><span class="dot"></span>Restricted</button>
+            <div class="spacer"></div>
+            <button class="tab tab--close" id="closeBtn">Close</button>
+          </nav>
+          <main class="content" id="content"></main>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-scrim" id="modalScrim">
+      <div class="modal">
+        <h2>New airport</h2>
+        <p>Stations are keyed by ID. Use a short lowercase handle — it can't be changed later.</p>
+        <div class="grid">
+          <div class="field col-2"><label>Airport ID</label><input id="newId" placeholder="e.g. vespucci" autocomplete="off" /><span class="hint">lowercase, no spaces</span></div>
+          <div class="field col-2"><label>Display label</label><input id="newLabel" placeholder="e.g. Vespucci Helipad" autocomplete="off" /></div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn--ghost" id="modalCancel">Cancel</button>
+          <button class="btn btn--primary" id="modalCreate">Create station</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---- dev harness: stub NUI + feed mock airports ----
+    window.__DEV__ = true;
+    window.__devPost = function (name) {
+      if (name === "creatorSaveAirport") {
+        var a = window.__aircreator && window.__aircreator.state;
+        var cur = a && a.airports.filter(function (x){ return x.id === a.currentId; })[0];
+        return { success: true, airport: cur };
+      }
+      if (name === "creatorPatchAirport") return { success: true };
+      return { success: true };
+    };
+  </script>
+  <script src="nui.js"></script>
+  <script src="app.js"></script>
+  <script>
+    fetch("mock-airports.json").then(function (r) { return r.json(); }).then(function (airports) {
+      window.postMessage({ action: "open", airports: airports }, "*");
+    });
+  </script>
+</body>
+</html>

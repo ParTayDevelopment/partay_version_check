@@ -1,6 +1,9 @@
-# Database Dumps
-*.sql
+﻿# Database Dumps
 *.bak
+
+# Local assistant/audit metadata
+.claude/
+local-audit/
 
 # Environment Configs
 .env

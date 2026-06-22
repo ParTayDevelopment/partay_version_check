@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Empty OLED fob shell">
+  <defs>
+    <linearGradient id="case" x1="44" y1="28" x2="210" y2="228" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#431407"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="77" y1="80" x2="181" y2="188" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fed7aa"/>
+      <stop offset="1" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="34" fill="#0f172a"/>
+  <path d="M88 28h80c25 0 46 21 46 46v108c0 25-21 46-46 46H88c-25 0-46-21-46-46V74c0-25 21-46 46-46Z" fill="url(#case)" stroke="#7c2d12" stroke-width="8"/>
+  <circle cx="128" cy="66" r="15" fill="#020617" stroke="#fb923c" stroke-width="7"/>
+  <rect x="72" y="98" width="112" height="92" rx="18" fill="#020617" stroke="url(#accent)" stroke-width="7" stroke-dasharray="10 8"/>
+  <path d="M97 126h62M97 151h62M110 176h36" stroke="#fdba74" stroke-width="7" stroke-linecap="round"/>
+  <path d="M84 214h88" stroke="#fb923c" stroke-width="10" stroke-linecap="round"/>
+</svg>

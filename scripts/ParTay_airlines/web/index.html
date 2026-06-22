@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Airport Creator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="atc.css" />
+  <link rel="stylesheet" href="airhud.css" />
+  <link rel="stylesheet" href="tablet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="root">
+    <div class="scrim">
+      <div class="tablet">
+
+        <!-- top annunciator strip -->
+        <header class="strip">
+          <div class="brand">
+            <span class="eyebrow">ParTay Airlines</span>
+            <span class="name">Airport Creator</span>
+          </div>
+
+          <div class="station">
+            <select id="stationSelect" title="Active station"></select>
+          </div>
+
+          <button class="btn" id="newAirportBtn">New airport</button>
+          <button class="btn btn--primary" id="saveBtn">Save</button>
+
+          <div class="grow"></div>
+
+          <div class="status" id="statusPill" data-state="ready">
+            <span class="led"></span><span id="statusText">Ready</span>
+          </div>
+        </header>
+
+        <!-- rail + content -->
+        <div class="body">
+          <nav class="rail" id="rail">
+            <button class="tab" data-tab="overview"><span class="dot"></span>Overview</button>
+            <button class="tab" data-tab="atc"><span class="dot"></span>ATC</button>
+            <button class="tab" data-tab="runways"><span class="dot"></span>Runways</button>
+            <button class="tab" data-tab="gates"><span class="dot"></span>Gates</button>
+            <button class="tab" data-tab="zones"><span class="dot"></span>Zones</button>
+            <button class="tab" data-tab="blip"><span class="dot"></span>Blip</button>
+            <button class="tab" data-tab="restricted"><span class="dot"></span>Restricted</button>
+            <div class="spacer"></div>
+            <button class="tab tab--close" id="closeBtn">Close</button>
+          </nav>
+
+          <main class="content" id="content"></main>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- new-airport modal -->
+    <div class="modal-scrim" id="modalScrim">
+      <div class="modal">
+        <h2>New airport</h2>
+        <p>Stations are keyed by ID. Use a short lowercase handle — it can't be changed later.</p>
+        <div class="grid">
+          <div class="field col-2">
+            <label>Airport ID</label>
+            <input id="newId" placeholder="e.g. vespucci" autocomplete="off" />
+            <span class="hint">lowercase, no spaces</span>
+          </div>
+          <div class="field col-2">
+            <label>Display label</label>
+            <input id="newLabel" placeholder="e.g. Vespucci Helipad" autocomplete="off" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn--ghost" id="modalCancel">Cancel</button>
+          <button class="btn btn--primary" id="modalCreate">Create station</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Aircraft Radio (ATC) panel — independent overlay ===== -->
+  <div id="atc-root">
+    <div class="atc-device">
+      <div class="atc-editbar">
+        <span class="atc-editlabel">Radio</span>
+        <button class="atc-szbtn" id="atc-szminus">&#8722;</button>
+        <button class="atc-szbtn" id="atc-szplus">&#43;</button>
+      </div>
+      <img class="atc-bezel" src="atc_panel.png" alt="">
+
+      <div class="atc-hot" id="atc-hotXmit" title="XMIT — read back clearance"></div>
+      <div class="atc-hot" id="atc-hotAtc"  title="ATC — switch ATC / Flight"></div>
+      <div id="atc-lamp"></div>
+      <div id="atc-statlamp"></div>
+
+      <div class="atc-screen">
+        <div id="atc-tx">\u25cf TRANSMITTING</div>
+
+        <!-- ATC VIEW -->
+        <div class="atc-view atc-on" id="atc-vAtc">
+          <div class="atc-sbar">
+            <div class="atc-vw"><span id="atc-fac">ATC</span><small id="atc-mode">Flight</small></div>
+            <div class="atc-freq" id="atc-freq"><span id="atc-freqNum">122.800</span><small id="atc-status">Connected</small></div>
+          </div>
+          <div class="atc-clr" id="atc-clr">
+            <div class="k">Current Clearance</div>
+            <div class="v" id="atc-clearance">None</div>
+            <div class="atc-readback" id="atc-readback">No readback required</div>
+          </div>
+          <div class="atc-logwrap">
+            <div class="atc-loghd">Transmissions</div>
+            <div class="atc-log" id="atc-log">
+              <div class="atc-logempty">No transmissions yet. Make a request below.</div>
+            </div>
+          </div>
+          <div class="atc-reqs">
+            <div class="atc-rgrid">
+              <button class="atc-rbtn" data-intent="departure">Request Taxi</button>
+              <button class="atc-rbtn" data-intent="takeoff">Request Departure</button>
+              <button class="atc-rbtn" data-intent="landing">Request Landing</button>
+              <button class="atc-rbtn" data-intent="transit">Request Transit</button>
+              <button class="atc-rbtn em full" data-intent="emergency">Declare Emergency</button>
+            </div>
+            <div class="atc-more">
+              <button class="atc-moretoggle" id="atc-moretoggle">More requests</button>
+              <div class="atc-extra" id="atc-extra">
+                <button class="atc-rbtn" data-intent="touch_go">Touch &amp; Go</button>
+                <button class="atc-rbtn" data-intent="low_pass">Low Pass</button>
+                <button class="atc-rbtn" data-intent="flight_following">Following</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FLIGHT VIEW -->
+        <div class="atc-view" id="atc-vFlight">
+          <div class="atc-fcs"><b id="atc-fCallsign">----</b><span id="atc-fAirline"></span></div>
+          <div class="atc-froute">
+            <div class="ap"><b id="atc-fOrigin">----</b><span>Origin</span></div>
+            <div class="ln"></div>
+            <div class="ap"><b id="atc-fDest">----</b><span>Dest</span></div>
+          </div>
+          <div class="atc-fgrid">
+            <div class="atc-fcell"><div class="k">Aircraft</div><div class="v" id="atc-fAircraft">Aircraft</div></div>
+            <div class="atc-fcell"><div class="k">Gate</div><div class="v cyan" id="atc-fGate">--</div></div>
+          </div>
+          <div class="atc-fbar">
+            <div class="k">Passengers Booked</div>
+            <div class="v"><span id="atc-fBooked">0 </span><small id="atc-fSeats1">/ 0</small></div>
+            <div class="atc-bar"><i id="atc-barBooked" style="width:0%"></i></div>
+          </div>
+          <div class="atc-fbar">
+            <div class="k">Boarded</div>
+            <div class="v"><span id="atc-fBoarded">0 </span><small id="atc-fSeats2">/ 0</small></div>
+            <div class="atc-bar"><i id="atc-barBoarded" style="width:0%"></i></div>
+          </div>
+          <div class="atc-fstat"><span class="atc-pill" id="atc-fStatusPill">Standby</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Glass cockpit HUD (PFD + MFD) — passive overlay ===== -->
+  <div id="airhud-root">
+    <div class="airhud-device">
+      <div class="airhud-editbar">
+        <span class="airhud-editlabel">HUD</span>
+        <button class="airhud-btn airhud-szbtn" id="airhud-szminus">&#8722;</button>
+        <button class="airhud-btn airhud-szbtn" id="airhud-szplus">&#43;</button>
+      </div>
+      <img class="airhud-bezel" src="airhud_panel.png" alt="">
+      <div class="airhud-screen" id="airhud-mfd"><canvas id="airhud-mfdCanvas"></canvas></div>
+      <div class="airhud-screen" id="airhud-pfd"><canvas id="airhud-pfdCanvas"></canvas></div>
+    </div>
+  </div>
+
+  <!-- shared edit toolbar (move/resize mode for HUD + radio) -->
+  <div id="ui-editbar">
+    <span class="ui-edit-label">Drag each panel &middot; use &minus;/&#43; to resize</span>
+    <button class="ui-edit-btn" id="ui-lock">&#10003; Lock In</button>
+    <button class="ui-edit-btn ghost" id="ui-reset">Reset All</button>
+  </div>
+
+  <!-- ===== Pilot dispatch tablet ===== -->
+  <div id="tablet-root">
+    <div class="t-scrim"></div>
+    <div class="t-device">
+      <img class="t-bezel" src="tablet_panel.png" alt="">
+      <div class="t-screen">
+        <div class="t-status">
+          <div class="t-brand">
+            <div class="t-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg></div>
+            <div><b id="t-airline">Airline Ops</b><span id="t-job">Pilot</span></div>
+          </div>
+          <div class="t-statusR">
+            <span class="t-duty" id="t-duty">On Duty</span>
+            <div class="t-clock" id="t-clock">--:--</div>
+            <button class="t-close" id="t-close">&times;</button>
+          </div>
+        </div>
+        <div class="t-content" id="t-content"></div>
+        <div class="t-toast" id="t-toast"></div>
+        <div class="t-tabs">
+          <button class="t-tab on" data-tab="flight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>My Flight</button>
+          <button class="t-tab" data-tab="schedule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>Schedule</button>
+          <button class="t-tab" data-tab="claim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v6M12 8l3-3M12 8L9 5"/><rect x="4" y="11" width="16" height="10" rx="2"/></svg>Claim</button>
+          <button class="t-tab" data-tab="pax"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 6a3 3 0 0 1 0 6M21 20a5 5 0 0 0-4-5"/></svg>Passengers</button>
+          <button class="t-tab" data-tab="earnings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19V5M4 19h16M8 16l4-5 3 3 4-6"/></svg>Earnings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="nui.js"></script>
+  <script src="app.js"></script>
+  <script src="atc.js"></script>
+  <script src="airhud.js"></script>
+  <script src="tablet.js"></script>
+</body>
+</html>

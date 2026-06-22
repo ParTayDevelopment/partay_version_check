@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParTay Keys NUI</title>
+    <link rel="stylesheet" href="style.css?v=1.0.21-setup-cards">
+</head>
+<body>
+    <!-- The Skeuomorphic Key Fob -->
+    <div id="fob-container" class="fob-container">
+        <div id="fob-brand-text" class="fob-brand-text">UNKNOWN</div>
+
+        <div id="oled-screen" class="oled-screen" aria-hidden="true">
+            <div id="oled-home" class="oled-home">
+                <button class="oled-section-btn" type="button" data-oled-section="doors">Doors</button>
+                <button class="oled-section-btn" type="button" data-oled-section="security">Security</button>
+                <button class="oled-section-btn" type="button" data-oled-section="lights">Lights</button>
+                <button class="oled-section-btn" type="button" data-oled-section="valet">Valet</button>
+                <button class="oled-section-btn" type="button" data-oled-section="info">Info</button>
+            </div>
+            <div id="oled-section" class="oled-section">
+                <button id="oled-back" class="oled-back" type="button" aria-label="Back">&lt;</button>
+                <div id="oled-section-title" class="oled-section-title">Doors</div>
+                <div id="oled-section-content" class="oled-section-content"></div>
+            </div>
+        </div>
+        
+        <!-- 2x3 Grid matching the tiered fob image layout -->
+        <div class="fob-buttons">
+            <button id="btn-lock" class="fob-btn" type="button" aria-label="Lock">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+            </button>
+            <button id="btn-unlock" class="fob-btn" type="button" aria-label="Unlock">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 7.6-1.7"></path></svg>
+            </button>
+            <button id="btn-lightbulb" class="fob-btn" type="button" aria-label="Headlights">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h6a5 5 0 0 1 0 8H4z"></path><path d="M15 9h5"></path><path d="M15 12h6"></path><path d="M15 15h5"></path></svg>
+            </button>
+            <button id="btn-trunk" class="fob-btn" type="button" aria-label="Trunk">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l1 8H4z"></path><path d="M8 10l2-4h4l2 4"></path><path d="M9 15h6"></path></svg>
+            </button>
+            <button id="btn-alarm" class="fob-btn" type="button" aria-label="Alarm">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5a6 6 0 0 0-6 6v3l-2 3h16l-2-3v-3a6 6 0 0 0-6-6z"></path><path d="M10 20h4"></path><path d="M4 6 2 4"></path><path d="m20 6 2-2"></path></svg>
+            </button>
+            <button id="btn-info" class="fob-btn" type="button" aria-label="Info">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 10v6"></path><path d="M12 7h.01"></path></svg>
+            </button>
+        </div>
+        <button id="btn-remote-engine" class="fob-engine-btn" type="button" aria-label="Remote Engine">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 7.2A6.5 6.5 0 1 0 19 12"></path><path d="M17.5 7.2V4.5"></path><path d="M17.5 7.2h-2.7"></path></svg>
+        </button>
+        <button id="btn-oled-power" class="fob-power-btn" type="button" aria-label="OLED Power">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v10"></path><path d="M18.4 6.6a9 9 0 1 1-12.8 0"></path></svg>
+        </button>
+    </div>
+
+    <div id="contract-container" class="contract-container">
+        <div class="contract-title">Vehicle Sale Contract</div>
+        <div id="contract-plate" class="contract-line"></div>
+        <div id="contract-price" class="contract-price"></div>
+        <div class="contract-actions">
+            <button id="btn-contract-cancel" class="contract-btn secondary" type="button">Cancel</button>
+            <button id="btn-contract-accept" class="contract-btn primary" type="button">Accept</button>
+        </div>
+    </div>
+
+    <div id="tablet-container" class="tablet-container">
+        <div class="tablet-frame">
+            <div class="tablet-hardware">
+                <span class="tablet-case-corner top-left" aria-hidden="true"></span>
+                <span class="tablet-case-corner top-right" aria-hidden="true"></span>
+                <span class="tablet-case-corner bottom-left" aria-hidden="true"></span>
+                <span class="tablet-case-corner bottom-right" aria-hidden="true"></span>
+                <span class="tablet-camera" aria-hidden="true"></span>
+                <span class="tablet-sensor" aria-hidden="true"></span>
+                <span class="tablet-home-button" aria-hidden="true"></span>
+            </div>
+            <div class="tablet-screen">
+                <button id="btn-tablet-power" class="tablet-power-button" type="button" aria-label="Tablet Power"></button>
+                <div class="tablet-status">
+                    <span>GPS TABLET</span>
+                </div>
+                <div class="tablet-body">
+                    <div class="tracker-list" id="tracker-list"></div>
+                    <div class="tracker-detail">
+                        <div id="tracker-title" class="tracker-title">Select Tracker</div>
+                        <div id="tracker-status" class="tracker-status">No tracker selected.</div>
+                        <textarea id="tracker-note" class="tracker-note" maxlength="255" placeholder="Add a private note..."></textarea>
+                        <div class="tablet-actions">
+                            <button id="btn-tracker-save" class="tablet-btn secondary" type="button">Save Note</button>
+                            <button id="btn-tracker-forget" class="tablet-btn danger" type="button">Forget</button>
+                            <button id="btn-tracker-track" class="tablet-btn primary" type="button">Track Signal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="signal-container" class="signal-container">
+        <div class="signal-reader">
+            <div class="signal-header">
+                <div>
+                    <div class="signal-kicker">SIGNAL FINDER</div>
+                    <div id="signal-title" class="signal-title">Vehicle Scan</div>
+                </div>
+                <button id="btn-signal-close" class="signal-close" type="button">x</button>
+            </div>
+            <div class="signal-screen">
+                <div class="signal-sweep">
+                    <div class="signal-ring"></div>
+                    <div class="signal-dot"></div>
+                </div>
+                <div id="signal-status" class="signal-status">Scanning nearby vehicle...</div>
+                <div id="signal-list" class="signal-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="service-container" class="service-container">
+        <div class="service-shell tablet-menu-shell">
+            <div class="service-header">
+                <div>
+                    <div id="service-kicker" class="service-kicker">PARTAY SERVICE DESK</div>
+                    <div id="service-title" class="service-title">Welcome</div>
+                    <div id="service-subtitle" class="service-subtitle">Please select from the options below.</div>
+                </div>
+                <button id="btn-service-close" class="service-close" type="button">x</button>
+            </div>
+            <div class="service-body">
+                <aside class="service-sidebar">
+                    <button id="service-tab-vehicles" class="service-tab" type="button" data-section="vehicles">
+                        <span class="service-tab-title">Vehicle Options</span>
+                        <span class="service-tab-copy">Recover, re-key, or upgrade.</span>
+                    </button>
+                    <button id="service-tab-shop" class="service-tab" type="button" data-section="shop">
+                        <span class="service-tab-title">Shop</span>
+                        <span class="service-tab-copy">Browse service inventory.</span>
+                    </button>
+                    <button id="service-tab-business" class="service-tab" type="button" data-section="business">
+                        <span class="service-tab-title">Business</span>
+                        <span class="service-tab-copy">Manage stock and staff.</span>
+                    </button>
+                    <div id="service-business-sidebar-tabs" class="service-business-sidebar-tabs"></div>
+                </aside>
+                <main class="service-main">
+                    <section id="service-vehicles-section" class="service-section">
+                        <div class="service-section-heading">
+                            <div>
+                                <div class="service-section-title">Nearby Owned Vehicles</div>
+                                <div class="service-section-copy">Only vehicles registered to you are shown here.</div>
+                            </div>
+                        </div>
+                        <div class="service-vehicle-layout">
+                            <div id="service-vehicle-list" class="service-list"></div>
+                            <div id="service-vehicle-detail" class="service-detail"></div>
+                        </div>
+                    </section>
+                    <section id="service-shop-section" class="service-section">
+                        <div class="service-section-heading">
+                            <div>
+                                <div id="service-shop-title" class="service-section-title">Shop</div>
+                                <div id="service-shop-copy" class="service-section-copy">Choose an item and quantity.</div>
+                            </div>
+                            <div id="service-currency-label" class="service-pill">Cash / Bank</div>
+                        </div>
+                        <div id="service-shop-grid" class="service-shop-grid"></div>
+                    </section>
+                    <section id="service-business-section" class="service-section">
+                        <div class="service-section-heading">
+                            <div>
+                                <div id="service-business-title" class="service-section-title">Business Management</div>
+                                <div id="service-business-copy" class="service-section-copy">Manage shop operations.</div>
+                            </div>
+                            <div id="service-business-status" class="service-pill">Owner</div>
+                        </div>
+                        <div id="service-business-grid" class="service-shop-grid"></div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div id="locksmith-setup-container" class="service-container">
+        <div class="service-shell tablet-menu-shell locksmith-setup-shell">
+            <div class="service-header">
+                <div>
+                    <div class="service-kicker">LOCKSMITH SETUP</div>
+                    <div class="service-title">Business Locations</div>
+                    <div class="service-subtitle">Create a location, place every required point, then finalize it for use.</div>
+                </div>
+                <button id="btn-locksmith-setup-close" class="service-close" type="button">x</button>
+            </div>
+            <div class="service-body">
+                <aside id="locksmith-setup-sidebar" class="service-sidebar"></aside>
+                <main class="service-main">
+                    <section class="service-section">
+                        <div class="service-setup-tabs">
+                            <button id="locksmith-setup-tab-universal" class="service-mini-btn active" type="button" data-setup-section="universal">Universal</button>
+                            <button id="locksmith-setup-tab-locations" class="service-mini-btn" type="button" data-setup-section="locations">Locations</button>
+                        </div>
+                        <div class="service-detail-header">
+                            <div>
+                                <div class="service-detail-title">Location Profile</div>
+                                <div class="service-detail-subtitle">Name the MLO location and assign the job that operates it.</div>
+                            </div>
+                            <button id="btn-locksmith-setup-finalize" class="service-primary-btn" type="button">Finalize</button>
+                        </div>
+                        <div class="locksmith-setup-fields">
+                            <label class="service-inline-field">
+                                <span>Location Name</span>
+                                <input id="locksmith-setup-location-name" class="service-inline-input" type="text" maxlength="80" placeholder="Main Locksmith">
+                            </label>
+                            <label class="service-inline-field">
+                                <span>Shop Type</span>
+                                <select id="locksmith-setup-shop-type" class="service-inline-input"></select>
+                            </label>
+                            <label class="service-inline-field">
+                                <span>Job Name</span>
+                                <input id="locksmith-setup-job-name" class="service-inline-input" type="text" maxlength="80" placeholder="locksmith">
+                            </label>
+                            <label class="service-inline-field">
+                                <span>Stocking Method</span>
+                                <select id="locksmith-setup-stock-method" class="service-inline-input"></select>
+                            </label>
+                        </div>
+                        <div id="locksmith-setup-status" class="service-empty"></div>
+                        <div id="locksmith-setup-grid" class="service-shop-grid"></div>
+                        <div id="locksmith-setup-universal-grid" class="service-shop-grid"></div>
+                        <div id="locksmith-setup-recipes-grid" class="service-shop-grid"></div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div id="key-container" class="service-container">
+        <div class="service-shell key-shell tablet-menu-shell">
+            <div class="service-header">
+                <div>
+                    <div class="service-kicker">KEY MANAGEMENT</div>
+                    <div class="service-title">My Keys</div>
+                    <div class="service-subtitle">Review vehicle keys, shared access, and key system services.</div>
+                </div>
+                <button id="btn-key-close" class="service-close" type="button">x</button>
+            </div>
+            <div class="service-body">
+                <aside id="key-sidebar" class="service-sidebar"></aside>
+                <main class="service-main">
+                    <section class="service-section">
+                        <div class="service-vehicle-layout">
+                            <div id="key-record-list" class="service-list"></div>
+                            <div id="key-record-detail" class="service-detail"></div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- NUI Scripts -->
+    <script src="app.js?v=1.0.21-setup-cards"></script>
+</body>
+</html>

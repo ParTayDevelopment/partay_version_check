@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dealer Leaderboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: transparent !important;
+            background-color: rgba(0, 0, 0, 0) !important;
+            font-family: Inter, Arial, Helvetica, sans-serif;
+        }
+
+        #root {
+            position: static;
+            width: 0;
+            height: 0;
+            overflow: visible;
+            pointer-events: none;
+            background: transparent !important;
+            background-color: rgba(0, 0, 0, 0) !important;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .leaderboard-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 32px;
+            pointer-events: none;
+            background: transparent !important;
+        }
+
+        .leaderboard-panel {
+            width: 420px;
+            height: 680px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(34, 211, 238, 0.18);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 45px rgba(236, 72, 153, 0.12);
+            animation: panelIn 260ms ease-out forwards;
+        }
+
+        .panel-header {
+            padding: 20px 20px 16px;
+        }
+
+        .logo-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .logo-wrap img {
+            width: 128px;
+            max-height: 62px;
+            object-fit: contain;
+            filter: drop-shadow(0 12px 22px rgba(236, 72, 153, 0.22));
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .title-kicker {
+            margin-bottom: 4px;
+            color: rgba(34, 211, 238, 0.86);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .title {
+            margin: 0;
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .subtitle {
+            margin-top: 6px;
+            color: rgba(255, 255, 255, 0.42);
+            font-size: 12px;
+        }
+
+        .close-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(34, 211, 238, 0.14);
+            background: rgba(9, 9, 11, 0.85);
+            color: rgba(255, 255, 255, 0.62);
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
+        }
+
+        .close-btn:hover {
+            color: #ffffff;
+            background: rgba(236, 72, 153, 0.18);
+            border-color: rgba(236, 72, 153, 0.36);
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px 20px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(236, 72, 153, 0.45) transparent;
+        }
+
+        .panel-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .panel-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .panel-content::-webkit-scrollbar-thumb {
+            background: rgba(236, 72, 153, 0.45);
+        }
+
+        .card {
+            margin-bottom: 16px;
+            padding: 16px;
+            background: rgba(9, 9, 11, 0.86);
+            border: 1px solid rgba(34, 211, 238, 0.14);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            animation: slideUp 320ms ease-out both;
+        }
+
+        .level-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .muted-label {
+            color: rgba(255, 255, 255, 0.48);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .level-name {
+            margin-top: 4px;
+            color: #a3e635;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .level-pill {
+            padding: 6px 10px;
+            color: #000000;
+            background: linear-gradient(90deg, #a3e635, #facc15);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .progress-track {
+            height: 8px;
+            overflow: hidden;
+            background: rgba(39, 39, 42, 0.64);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ec4899, #67e8f9, #a3e635);
+            transition: width 420ms ease;
+        }
+
+        .progress-text {
+            margin-top: 9px;
+            color: rgba(255, 255, 255, 0.38);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .reward-card {
+            border-color: rgba(163, 230, 53, 0.38);
+            box-shadow: 0 16px 38px rgba(0, 0, 0, 0.42), 0 0 20px rgba(163, 230, 53, 0.12);
+        }
+
+        .reward-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .reward-title {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .reward-subtitle {
+            margin-top: 3px;
+            color: #bef264;
+            font-size: 12px;
+        }
+
+        .claim-btn,
+        .refresh-btn {
+            border: 0;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 900;
+            transition: transform 120ms ease, opacity 120ms ease;
+        }
+
+        .claim-btn {
+            padding: 10px 14px;
+            color: #000000;
+            background: linear-gradient(90deg, #bef264, #facc15);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .claim-btn:hover,
+        .refresh-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .leaderboard-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 4px 0 12px;
+        }
+
+        .leaderboard-head h2 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .refresh-btn {
+            padding: 0;
+            color: #67e8f9;
+            background: transparent;
+            font-size: 12px;
+        }
+
+        .refresh-btn[disabled] {
+            opacity: 0.45;
+            cursor: default;
+        }
+
+        .empty-state {
+            padding: 32px 16px;
+            color: rgba(255, 255, 255, 0.38);
+            text-align: center;
+        }
+
+        .rank-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .rank-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(9, 9, 11, 0.86);
+            border: 1px solid rgba(34, 211, 238, 0.12);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32);
+        }
+
+        .rank-row.top {
+            border-color: rgba(163, 230, 53, 0.28);
+        }
+
+        .rank-badge {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: rgba(255, 255, 255, 0.66);
+            background: rgba(39, 39, 42, 0.72);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .rank-name {
+            flex: 1;
+            min-width: 0;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .rank-score {
+            color: #f472b6;
+            font-size: 13px;
+            font-weight: 900;
+            text-align: right;
+        }
+
+        .rank-score span {
+            display: block;
+            margin-top: 2px;
+            color: rgba(255, 255, 255, 0.28);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .sale-toast-wrap {
+            position: fixed;
+            left: 50%;
+            top: 34px;
+            transform: translateX(-50%);
+            z-index: 9999;
+            pointer-events: none;
+            background: transparent !important;
+        }
+
+        .sale-toast {
+            position: relative;
+            width: 280px;
+            padding: 13px 14px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(10, 12, 14, 0.86);
+            border: 1px solid rgba(72, 218, 151, 0.26);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38), 0 0 20px rgba(72, 218, 151, 0.12);
+            animation: saleToastIn 280ms cubic-bezier(0.2, 0.9, 0.25, 1.1) forwards;
+        }
+
+        .sale-toast.exiting {
+            animation: saleToastOut 240ms ease-in forwards;
+        }
+
+        .sale-toast::before,
+        .sale-toast-timer {
+            content: '';
+            position: absolute;
+            left: 0;
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, #48da97, #22d3ee, #ec4899);
+        }
+
+        .sale-toast::before {
+            top: 0;
+        }
+
+        .sale-toast-timer {
+            bottom: 0;
+            transform-origin: left center;
+            animation: saleToastTimer 4.9s linear forwards;
+        }
+
+        .sale-toast-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .sale-toast-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 8px;
+            color: rgba(72, 218, 151, 0.95);
+            background: rgba(72, 218, 151, 0.1);
+            border: 1px solid rgba(72, 218, 151, 0.22);
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .sale-toast-kicker {
+            color: rgba(72, 218, 151, 0.78);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .sale-toast-title {
+            color: rgba(255, 255, 255, 0.94);
+            font-size: 13px;
+            font-weight: 900;
+            line-height: 1.25;
+        }
+
+        .sale-toast-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 7px;
+        }
+
+        .sale-toast-stat {
+            padding: 8px 9px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.045);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sale-toast-label {
+            display: block;
+            margin-bottom: 4px;
+            color: rgba(255, 255, 255, 0.32);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .sale-toast-value {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .sale-toast-value.money {
+            color: rgba(250, 204, 21, 0.95);
+        }
+
+        .sale-toast-value.xp {
+            color: rgba(72, 218, 151, 0.95);
+        }
+
+        @keyframes panelIn {
+            from { opacity: 0; transform: translateX(18px) scale(0.98); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes saleToastIn {
+            from { opacity: 0; transform: translateY(-20px) scale(0.96); }
+            70% { opacity: 1; transform: translateY(3px) scale(1.01); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes saleToastOut {
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to { opacity: 0; transform: translateY(-18px) scale(0.97); }
+        }
+
+        @keyframes saleToastTimer {
+            from { transform: scaleX(1); opacity: 0.95; }
+            to { transform: scaleX(0); opacity: 0.45; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div id="sale-toast-root"></div>
+        <div id="leaderboard-screen" class="leaderboard-screen hidden">
+            <div class="leaderboard-panel">
+                <div class="panel-header">
+                    <div class="logo-wrap">
+                        <img src="./logo.png" alt="No Love Lost">
+                    </div>
+                    <div class="header-row">
+                        <div>
+                            <div class="title-kicker">Dealer Network</div>
+                            <h1 class="title">Leaderboard</h1>
+                            <div class="subtitle">Build rep, move product, claim rewards.</div>
+                        </div>
+                        <button id="close-btn" class="close-btn" type="button" aria-label="Close">&times;</button>
+                    </div>
+                </div>
+
+                <div class="panel-content">
+                    <div id="level-card" class="card"></div>
+                    <div id="reward-slot"></div>
+
+                    <div class="leaderboard-head">
+                        <h2>Top 25</h2>
+                        <button id="refresh-btn" class="refresh-btn" type="button">Refresh</button>
+                    </div>
+
+                    <div id="rank-list" class="rank-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            visible: false,
+            leaderboard: [],
+            playerData: null,
+            unclaimedData: null,
+            levels: [],
+            refreshing: false,
+            lastRefresh: 0,
+            refreshTimer: null,
+            saleTimer: null,
+            saleExitTimer: null
+        };
+
+        const screen = document.getElementById('leaderboard-screen');
+        const closeBtn = document.getElementById('close-btn');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const levelCard = document.getElementById('level-card');
+        const rewardSlot = document.getElementById('reward-slot');
+        const rankList = document.getElementById('rank-list');
+        const saleToastRoot = document.getElementById('sale-toast-root');
+
+        function resourceName() {
+            if (typeof GetParentResourceName === 'function') {
+                return GetParentResourceName();
+            }
+            return 'Partay_hustle';
+        }
+
+        function nuiPost(name, payload) {
+            return fetch(`https://${resourceName()}/${name}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload || {})
+            });
+        }
+
+        function formatNumber(value) {
+            return Number(value || 0).toLocaleString();
+        }
+
+        function escapeHtml(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getLevelProgress() {
+            const points = Number(state.playerData && state.playerData.levelpoints || 0);
+            const levels = Array.isArray(state.levels) ? state.levels : [];
+            let currentLevel = 0;
+            let previous = 0;
+            let next = 0;
+
+            for (let i = 0; i < levels.length; i += 1) {
+                const threshold = Number(levels[i] && levels[i].points || 0);
+                if (points >= threshold) {
+                    currentLevel = i + 1;
+                    previous = threshold;
+                } else {
+                    next = threshold;
+                    break;
+                }
+            }
+
+            const maxed = next <= 0;
+            const span = Math.max(next - previous, 1);
+            const gained = Math.max(points - previous, 0);
+            const progress = maxed ? 100 : Math.min(100, Math.max(0, (gained / span) * 100));
+            const toNext = maxed ? 0 : Math.max(next - points, 0);
+
+            return { points, currentLevel, next, progress, toNext, maxed };
+        }
+
+        function renderLevel() {
+            const level = getLevelProgress();
+            levelCard.innerHTML = `
+                <div class="level-top">
+                    <div>
+                        <div class="muted-label">Current Rank</div>
+                        <div class="level-name">Level ${level.currentLevel}</div>
+                    </div>
+                    <div class="level-pill">${formatNumber(level.points)} XP</div>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: ${level.progress}%"></div>
+                </div>
+                <div class="progress-text">
+                    ${level.maxed ? 'Max level reached' : `${formatNumber(level.toNext)} XP to next level`}
+                </div>
+            `;
+        }
+
+        function renderRewards() {
+            const unclaimed = Number(state.unclaimedData && state.unclaimedData.unclaimed || 0);
+            if (unclaimed > 0) {
+                rewardSlot.innerHTML = `
+                    <div class="card reward-card">
+                        <div class="reward-row">
+                            <div>
+                                <div class="reward-title">${unclaimed} Reward${unclaimed === 1 ? '' : 's'}</div>
+                                <div class="reward-subtitle">Ready to claim</div>
+                            </div>
+                            <button id="claim-btn" class="claim-btn" type="button">Claim</button>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('claim-btn').addEventListener('click', claimRewards);
+            } else {
+                rewardSlot.innerHTML = `
+                    <div class="card">
+                        <div class="empty-state">No rewards to claim</div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderRanks() {
+            const rows = Array.isArray(state.leaderboard) ? state.leaderboard.slice(0, 25) : [];
+            if (rows.length === 0) {
+                rankList.innerHTML = '<div class="card empty-state">No leaderboard data</div>';
+                return;
+            }
+
+            rankList.innerHTML = rows.map((player, index) => {
+                const rank = index + 1;
+                const top = rank <= 3;
+                const badge = top ? ['1st', '2nd', '3rd'][index] : `#${rank}`;
+                return `
+                    <div class="rank-row ${top ? 'top' : ''}">
+                        <div class="rank-badge">${badge}</div>
+                        <div class="rank-name">${escapeHtml(player && player.name || 'Unknown')}</div>
+                        <div class="rank-score">${formatNumber(player && player.score || 0)}<span>XP</span></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderLeaderboard() {
+            renderLevel();
+            renderRewards();
+            renderRanks();
+        }
+
+        async function refreshData(showSpinner) {
+            const now = Date.now();
+            if (now - state.lastRefresh < 2000) return;
+
+            state.lastRefresh = now;
+            state.refreshing = !!showSpinner;
+            refreshBtn.disabled = state.refreshing;
+            refreshBtn.textContent = state.refreshing ? 'Refreshing...' : 'Refresh';
+
+            try {
+                const leaderboard = await nuiPost('getData', { callback: 'Partay_hustle:getLeaderboard' }).then(r => r.json());
+                const playerData = await nuiPost('getData', { callback: 'Partay_hustle:getLevel' }).then(r => r.json());
+                const rewards = await nuiPost('getData', { callback: 'Partay_hustle:getUnclaimedLevels' }).then(r => r.json());
+
+                state.leaderboard = leaderboard || [];
+                state.playerData = playerData || null;
+                state.unclaimedData = rewards || null;
+                renderLeaderboard();
+            } catch (error) {
+                console.error('[DealerLeaderboard] refresh failed', error);
+            } finally {
+                state.refreshing = false;
+                refreshBtn.disabled = false;
+                refreshBtn.textContent = 'Refresh';
+            }
+        }
+
+        async function claimRewards() {
+            try {
+                await nuiPost('claimRewards', {});
+                await refreshData(true);
+            } catch (error) {
+                console.error('[DealerLeaderboard] claim failed', error);
+            }
+        }
+
+        function openLeaderboard(data) {
+            state.visible = true;
+            state.leaderboard = data.leaderboard || [];
+            state.playerData = data.playerData || null;
+            state.unclaimedData = data.unclaimedData || { unclaimed: 0, current: 1, rewarded: 0 };
+            state.levels = Array.isArray(data.levels) ? data.levels : [];
+            screen.classList.remove('hidden');
+            renderLeaderboard();
+
+            if (state.refreshTimer) clearInterval(state.refreshTimer);
+            state.refreshTimer = setInterval(() => refreshData(false), 2000);
+        }
+
+        function closeLeaderboard(postClose) {
+            state.visible = false;
+            screen.classList.add('hidden');
+            if (state.refreshTimer) {
+                clearInterval(state.refreshTimer);
+                state.refreshTimer = null;
+            }
+            if (postClose !== false) {
+                nuiPost('close', {});
+            }
+        }
+
+        function showSaleToast(data) {
+            if (state.saleTimer) clearTimeout(state.saleTimer);
+            if (state.saleExitTimer) clearTimeout(state.saleExitTimer);
+
+            const label = escapeHtml(data.label || 'Product');
+            const quantity = Number(data.quantity || 0);
+            const total = Number(data.total || 0);
+            const points = Number(data.points || 0);
+
+            saleToastRoot.innerHTML = `
+                <div class="sale-toast-wrap">
+                    <div class="sale-toast" id="sale-toast">
+                        <div class="sale-toast-head">
+                            <div class="sale-toast-icon">$</div>
+                            <div>
+                                <div class="sale-toast-kicker">Sale Complete</div>
+                                <div class="sale-toast-title">${quantity}x ${label}</div>
+                            </div>
+                        </div>
+                        <div class="sale-toast-grid">
+                            <div class="sale-toast-stat">
+                                <span class="sale-toast-label">Earned</span>
+                                <span class="sale-toast-value money">$${formatNumber(total)}</span>
+                            </div>
+                            <div class="sale-toast-stat">
+                                <span class="sale-toast-label">Leaderboard</span>
+                                <span class="sale-toast-value xp">+${formatNumber(points)} XP</span>
+                            </div>
+                        </div>
+                        <div class="sale-toast-timer"></div>
+                    </div>
+                </div>
+            `;
+
+            state.saleTimer = setTimeout(() => {
+                const toast = document.getElementById('sale-toast');
+                if (toast) toast.classList.add('exiting');
+                state.saleExitTimer = setTimeout(() => {
+                    saleToastRoot.innerHTML = '';
+                }, 260);
+            }, 4900);
+        }
+
+        window.addEventListener('message', (event) => {
+            const data = event.data || {};
+
+            if (data.action === 'openUI') {
+                openLeaderboard(data);
+            } else if (data.action === 'closeUI') {
+                closeLeaderboard(false);
+            } else if (data.action === 'updateData') {
+                if (data.leaderboard) state.leaderboard = data.leaderboard || [];
+                if (data.playerData) state.playerData = data.playerData;
+                if (data.unclaimedData) state.unclaimedData = data.unclaimedData;
+                if (Array.isArray(data.levels)) state.levels = data.levels;
+                if (state.visible) renderLeaderboard();
+            } else if (data.action === 'saleNotify') {
+                showSaleToast(data);
+            }
+        });
+
+        closeBtn.addEventListener('click', () => closeLeaderboard(true));
+        refreshBtn.addEventListener('click', () => refreshData(true));
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && state.visible) {
+                closeLeaderboard(true);
+            }
+        });
+    </script>
+</body>
+</html>

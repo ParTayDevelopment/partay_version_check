@@ -1,0 +1,74 @@
+body {
+	position: relative;
+	font-family: sans-serif;
+	overflow: hidden;
+}
+
+@font-face {
+    font-family: 'DRKrapkaRound';
+    src: url('fonts/DRKrapkaRound-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+#detector {
+    display: none;
+	cursor: default;
+	position: fixed;
+	width: 375px;
+	height: 495px;
+    top: 6%;
+	left: 2%;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+}
+
+#detector.moving {
+    cursor: move;
+}
+
+#detector img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+#voldown:hover .hovertext {
+    visibility: visible;
+}
+
+.hovertext {
+    position: absolute;
+    top: -5px;
+    right: 105%;
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 4px 4px;
+    border-radius: 6px;
+    z-index: 1;
+}
+
+.screeninfo {
+    display: none;
+	position: absolute;
+	text-align: center;
+    font-family: 'DRKrapkaRound', sans-serif;
+    font-weight: bolder;
+	background-color: #000000;
+	top: 14%;
+	left: 17%;
+    color: white;
+    font-size: 12px;
+}
+
+#mute {
+	position: absolute;
+	top: 18%;
+	left: 10.5%;
+	padding: 10px 30px;
+    background-color: rgba(0, 0, 0, 0.0);
+	border: none;
+    outline: none;
+}

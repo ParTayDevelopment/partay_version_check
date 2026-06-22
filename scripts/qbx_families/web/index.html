@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Family</title>
+</head>
+<body>
+    <aside id="panel" class="tablet hidden">
+        <div class="tablet-buttons top"></div>
+        <div class="tablet-buttons side"></div>
+        <div class="bezel">
+            <div class="camera"></div>
+            <div class="screen">
+                <aside class="sidebar">
+                    <div class="brand">
+                        <div class="brand-mark">F</div>
+                        <div>
+                            <strong>Family Tablet</strong>
+                            <span>Operations</span>
+                        </div>
+                    </div>
+
+                    <nav class="nav">
+                        <p>Overview</p>
+                        <button class="nav-item active" data-tab="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>Overview</button>
+                        <p>Family</p>
+                        <button class="nav-item" data-tab="members"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Members</button>
+                        <button class="nav-item" data-tab="events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Events</button>
+                        <button class="nav-item" data-tab="rewards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C9.7 3 11 5 12 8c1-3 2.3-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>Redeem</button>
+                        <p>Tools</p>
+                        <button class="nav-item" data-tab="logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Logs</button>
+                        <button class="nav-item" data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1.82V22a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1.82-.33H2a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1.82V2a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 .6 1 1.65 1.65 0 0 0 1.82.33H22a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"/></svg>Settings</button>
+                    </nav>
+
+                    <div class="profile-card">
+                        <img id="sidebar-family-image" class="family-image small hidden" alt="">
+                        <div>
+                            <strong id="sidebar-family-name">No Family</strong>
+                            <span id="sidebar-family-role">Unaffiliated</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="workspace">
+                    <header class="topbar">
+                        <div class="family-heading">
+                            <img id="family-image" class="family-image hidden" alt="">
+                            <div>
+                                <p id="family-role" class="eyebrow">Family</p>
+                                <h1 id="family-name">No Family</h1>
+                            </div>
+                        </div>
+                        <div class="topbar-actions">
+                            <button id="refresh" class="small-button">Refresh</button>
+                            <button id="close" class="icon-button" aria-label="Close">&#10005;</button>
+                        </div>
+                    </header>
+
+                    <main class="ops-layout">
+                        <section class="main-stage">
+                            <section id="overview-tab" class="tab-panel active">
+                                <div class="dashboard">
+                                    <article class="stat-card income">
+                                        <span id="family-level">Level 1</span>
+                                        <small>Family Level</small>
+                                    </article>
+                                    <article class="stat-card accent">
+                                        <span id="family-points">0 pts</span>
+                                        <small>Points</small>
+                                    </article>
+                                    <article class="stat-card violet">
+                                        <span id="total-points">0</span>
+                                        <small>Total XP</small>
+                                    </article>
+                                    <article class="stat-card amber">
+                                        <span id="online-members">0</span>
+                                        <small>Online</small>
+                                    </article>
+                                    <article class="stat-card">
+                                        <span id="family-funds">$0</span>
+                                        <small>Family Funds</small>
+                                    </article>
+                                </div>
+
+                                <article class="chart-card">
+                                    <div class="section-title">
+                                        <div>
+                                            <h2>Family Progress</h2>
+                                            <p id="next-level" class="muted">No progress yet</p>
+                                        </div>
+                                    </div>
+                                    <div class="progress-visual">
+                                        <div class="bar">
+                                            <div id="progress-fill"></div>
+                                        </div>
+                                    </div>
+                                </article>
+
+                                <article class="panel-card">
+                                    <div class="section-title">
+                                        <h2>Recent Operations</h2>
+                                    </div>
+                                    <div id="overview-feed" class="activity-feed"></div>
+                                </article>
+                            </section>
+
+                            <section id="members-tab" class="tab-panel">
+                                <div class="section-title">
+                                    <h2>Family Members</h2>
+                                    <div class="event-toolbar">
+                                        <span id="member-funds" class="soft-label">$0 saved</span>
+                                        <button id="donate-funds" class="small-button hidden">Donate</button>
+                                        <button id="invite" class="small-button hidden">Invite</button>
+                                    </div>
+                                </div>
+                                <div id="members" class="list"></div>
+                            </section>
+
+                            <section id="events-tab" class="tab-panel">
+                                <div class="section-title">
+                                    <h2>Events</h2>
+                                    <div class="event-toolbar">
+                                        <button id="create-event" class="action-button hidden">Create Event</button>
+                                        <button id="stop-event" class="action-button hidden">Stop Event</button>
+                                    </div>
+                                </div>
+                                <div id="event-panel" class="event-panel"></div>
+                            </section>
+
+                            <section id="rewards-tab" class="tab-panel">
+                                <div class="section-title">
+                                    <h2>Redeem</h2>
+                                    <span class="soft-label">Rewards and prop unlocks</span>
+                                </div>
+                                <div id="rewards" class="list"></div>
+                            </section>
+
+                            <section id="logs-tab" class="tab-panel">
+                                <div class="section-title">
+                                    <h2>Logs</h2>
+                                    <span class="soft-label">History</span>
+                                </div>
+                                <div id="logs-feed" class="activity-feed"></div>
+                            </section>
+
+                            <section id="settings-tab" class="tab-panel">
+                                <div class="section-title">
+                                    <h2>Settings</h2>
+                                    <span class="soft-label">Family identity</span>
+                                </div>
+                                <div id="settings-panel" class="settings-panel"></div>
+                            </section>
+                        </section>
+
+                        <aside class="quick-panel">
+                            <article class="quick-card">
+                                <h2>Quick Actions</h2>
+                                <p>Family management and reward controls.</p>
+                                <button id="quick-members" class="quick-action">View Members</button>
+                                <button id="quick-rewards" class="quick-action">Open Redeem</button>
+                                <button id="quick-invite" class="quick-action hidden">Invite Member</button>
+                            </article>
+
+                            <article class="quick-card payroll">
+                                <div class="quick-row">
+                                    <span>Active Event</span>
+                                    <strong id="quick-event-status">Offline</strong>
+                                </div>
+                                <p id="quick-event-summary">Event zones and prop scenes will report live status here.</p>
+                            </article>
+                        </aside>
+                    </main>
+                </div>
+                <div id="toasts" class="toast-stack"></div>
+            </div>
+        </div>
+    </aside>
+
+    <script src="app.js"></script>
+</body>
+</html>
